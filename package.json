@@ -8,7 +8,10 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
+    "build:root": "node tools/build-root.mjs",
     "preview": "astro preview",
+    "serve": "node tools/serve.mjs 4321 /seti-web/",
+    "check:deploy": "node tools/check-deploy.mjs 4321 /seti-web/",
     "check": "astro check"
   },
   "dependencies": {

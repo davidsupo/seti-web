@@ -181,7 +181,8 @@ GitHub Pages publica los repositorios de proyecto en `https://USUARIO.github.io/
 
 ### Opción A — GitHub Actions (recomendada)
 
-El workflow ya está incluido en `.github/workflows/deploy.yml`.
+El workflow ya está incluido en `.github/workflows/deploy.yml` y crea el sitio de Pages
+automáticamente si aún no existe (`enablement: true`).
 
 1. Sube los cambios:
 
@@ -192,10 +193,16 @@ El workflow ya está incluido en `.github/workflows/deploy.yml`.
    ```
 
 2. En GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+   Si Pages nunca se activó, este paso también lo habilita.
 3. Cada `push` a `main` compila y publica en `https://USUARIO.github.io/NOMBRE-REPO/`.
 4. Revisa la pestaña **Actions** hasta que “Deploy to GitHub Pages” termine en verde.
 
 No hace falta subir `dist/` ni `node_modules/`: están en `.gitignore` y el workflow ejecuta `npm ci && npm run build`.
+
+> **Error `Get Pages site failed … Not Found`**: significa que Pages no está habilitado
+> en el repositorio. Actívalo en **Settings → Pages** (Source: *GitHub Actions*) y vuelve
+> a ejecutar el workflow desde la pestaña Actions → *Re-run all jobs*. Si el repositorio es
+> privado, GitHub Pages requiere un plan de pago.
 
 ### Opción B — subir `dist/` a mano
 
@@ -223,11 +230,21 @@ En Actions basta con descomentar el bloque `env:` del workflow.
 
 ### Comprobar el despliegue en local
 
+El build normal usa `base = /seti-web/`, así que **no funciona servido en la raíz**. Hay dos formas de revisarlo:
+
 ```bash
+# A) respetando la base real de GitHub Pages
 npm run build
-node tools/serve.mjs 4400 /seti-web/    # sirve dist bajo la base real
-node tools/check-deploy.mjs 4400 /seti-web/
+npm run serve                  # http://127.0.0.1:4321/seti-web/
+npm run check:deploy           # verifica que no haya 404
+
+# B) como si estuviera en la raíz (sirve para `npx http-server dist`)
+npm run build:root
+npx http-server dist
 ```
+
+`build:root` recompila con `BASE_PATH=/`; el resto es idéntico. Vuelve a ejecutar
+`npm run build` antes de hacer commit para dejar el `dist` con la base correcta.
 
 `check-deploy.mjs` recorre las 10 rutas principales y falla si algún recurso, script, imagen o enlace interno queda sin la base (detecta exactamente los 404 típicos).
 

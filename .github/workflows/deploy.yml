@@ -32,14 +32,17 @@ jobs:
 
       - name: Build site
         run: npm run build
-        # El `base` (/nombre-del-repo/) y el `site` se detectan automáticamente
-        # desde GITHUB_REPOSITORY. Si usas dominio propio, define SITE_URL:
+        # El `base` (/seti-web/) y el `site` se detectan automáticamente desde
+        # GITHUB_REPOSITORY. Si usas dominio propio, define:
         # env:
         #   SITE_URL: https://setitechnology.pe
         #   BASE_PATH: /
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
+        with:
+          # Crea el sitio de Pages la primera vez si aún no existe
+          enablement: true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
