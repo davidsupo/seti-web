@@ -5,6 +5,7 @@ import CoverageMap from '../CoverageMap.astro';
 import CityList from '../CityList.astro';
 import Icon from '../ui/Icon.astro';
 import { cityCount, regions } from '../../data/cities';
+import { withBase } from '../../lib/base';
 ---
 
 <Section id="cobertura" tone="dark">
@@ -36,7 +37,7 @@ import { cityCount, regions } from '../../data/cities';
           <p>
             ¿Tu ciudad no aparece? Evaluamos proyectos en todo el Perú con brigadas de
             instalación.
-            <a href="/contacto/">Consúltanos</a>
+            <a href={withBase('/contacto/')}>Consúltanos</a>
           </p>
         </div>
       </div>

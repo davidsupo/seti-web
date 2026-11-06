@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Icon from '../components/ui/Icon.astro';
 import Button from '../components/ui/Button.astro';
 import { services } from '../data/services';
+import { withBase } from '../lib/base';
 ---
 
 <BaseLayout title="Página no encontrada" description="La página que buscas no existe o cambió de dirección." noindex>
@@ -27,7 +28,7 @@ import { services } from '../data/services';
         {
           services.map((service) => (
             <li>
-              <a href={`/servicios/${service.slug}/`}>
+              <a href={withBase(`/servicios/${service.slug}/`)}>
                 <Icon name={service.icon as any} size={16} />
                 {service.shortTitle}
               </a>

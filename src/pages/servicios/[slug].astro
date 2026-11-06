@@ -9,6 +9,7 @@ import Cta from '../../components/sections/Cta.astro';
 import Icon from '../../components/ui/Icon.astro';
 import { services, getService } from '../../data/services';
 import { serviceSchema, breadcrumbSchema, organizationSchema } from '../../lib/schema';
+import { withBase } from '../../lib/base';
 
 export async function getStaticPaths() {
   return services.map((service) => ({
@@ -48,7 +49,7 @@ const url = `/servicios/${service.slug}/`;
   >
     <div class="sd-hero-actions">
       <Button href="/contacto/" size="md">Cotizar este servicio</Button>
-      <a href="/servicios/" class="sd-hero-back">
+      <a href={withBase('/servicios/')} class="sd-hero-back">
         <Icon name="arrow-right" size={14} />
         Ver todos los servicios
       </a>
@@ -108,7 +109,7 @@ const url = `/servicios/${service.slug}/`;
           <Icon name="headset" size={20} />
           <p>
             ¿Tienes un proyecto en curso?
-            <a href="/contacto/">Conversemos con un ingeniero</a>.
+            <a href={withBase('/contacto/')}>Conversemos con un ingeniero</a>.
           </p>
         </div>
       </aside>

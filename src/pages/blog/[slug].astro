@@ -7,6 +7,7 @@ import Cta from '../../components/sections/Cta.astro';
 import Icon from '../../components/ui/Icon.astro';
 import { formatDate, readingTime } from '../../lib/format';
 import { breadcrumbSchema, organizationSchema } from '../../lib/schema';
+import { withBase } from '../../lib/base';
 import { site } from '../../data/site';
 
 export async function getStaticPaths() {
@@ -22,7 +23,7 @@ const { post } = Astro.props;
 const { Content, headings } = await render(post);
 const { title, description, pubDate, updatedDate, author, tags, cover, coverAlt, icon } = post.data;
 const minutes = readingTime(post.body);
-const canonical = new URL(`/blog/${post.id}/`, site.url).href;
+const canonical = new URL(withBase(`/blog/${post.id}/`), Astro.site ?? new URL(site.url)).href;
 
 const toc = headings.filter((heading) => heading.depth === 2);
 const related = (await getCollection('blog', ({ data, id }) => !data.draft && id !== post.id))
@@ -68,9 +69,9 @@ const articleSchema = {
     <div class="post-hero__bg" aria-hidden="true"></div>
     <div class="container post-hero__inner">
       <nav class="crumbs" aria-label="Ruta de navegación">
-        <a href="/">Inicio</a>
+        <a href={withBase('/')}>Inicio</a>
         <Icon name="chevron-down" size={10} />
-        <a href="/blog/">Blog</a>
+        <a href={withBase('/blog/')}>Blog</a>
         <Icon name="chevron-down" size={10} />
         <span aria-current="page">{tags[0] ?? 'Artículo'}</span>
       </nav>
@@ -111,7 +112,7 @@ const articleSchema = {
         {
           cover && (
             <img
-              src={cover}
+              src={withBase(cover)}
               alt={coverAlt ?? title}
               class="post__cover"
               width="1200"
@@ -151,7 +152,7 @@ const articleSchema = {
             </a>
           </div>
 
-          <a href="/blog/" class="post__back">
+          <a href={withBase('/blog/')} class="post__back">
             <Icon name="arrow-right" size={14} />
             Volver al blog
           </a>
@@ -181,7 +182,7 @@ const articleSchema = {
         <div class="container">
           <div class="related-head">
             <p class="eyebrow">Seguir leyendo</p>
-            <a href="/blog/" class="link-arrow">
+            <a href={withBase('/blog/')} class="link-arrow">
               Todo el blog
               <Icon name="arrow-right" size={14} />
             </a>

@@ -9,6 +9,7 @@ import Cta from '../components/sections/Cta.astro';
 import Icon from '../components/ui/Icon.astro';
 import { cities, cityCount, regions } from '../data/cities';
 import { breadcrumbSchema, organizationSchema } from '../lib/schema';
+import { withBase } from '../lib/base';
 
 const standards = [
   {
@@ -81,7 +82,7 @@ const description = `Puntos operativos en ${cityCount} ciudades del Perú: Piura
       <p class="cities-note">
         <Icon name="sparkles" size={16} />
         ¿Tu ciudad no está en la lista? Evaluamos proyectos en todo el Perú coordinando brigadas de
-        instalación. <a href="/contacto/">Consúltanos</a>.
+        instalación. <a href={withBase('/contacto/')}>Consúltanos</a>.
       </p>
     </div>
   </Section>

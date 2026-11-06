@@ -8,12 +8,14 @@ Sitio estático construido con **Astro 5**, CSS propio con design tokens y un ma
 
 ```bash
 npm install
-npm run dev      # http://localhost:4321
-npm run build    # genera /dist
+npm run dev      # http://localhost:4321/seti-web/
+npm run build    # genera /dist listo para GitHub Pages
 npm run preview  # sirve el build
 ```
 
 > Requiere Node 18.20+, 20.9+ o 22+.
+>
+> La URL de desarrollo incluye el `base` (`/seti-web/`) para que local y producción se comporten igual. Si cambias el nombre del repositorio, actualiza `REPO_FALLBACK` en `astro.config.mjs`.
 
 ---
 
@@ -164,20 +166,77 @@ El contenido va en Markdown normal (títulos `##`, listas, tablas, citas…). El
 
 ---
 
-## 8. Despliegue
+## 8. Despliegue en GitHub Pages
 
-Sitio 100 % estático: funciona en Netlify, Vercel, Cloudflare Pages, GitHub Pages o cualquier hosting de archivos.
+Este proyecto ya está publicado en `https://davidsupo.github.io/seti-web/`.
+
+### Cómo se resuelven las rutas
+
+GitHub Pages publica los repositorios de proyecto en `https://USUARIO.github.io/NOMBRE-REPO/`, **no** en la raíz del dominio. Por eso:
+
+- `astro.config.mjs` calcula `base = '/NOMBRE-REPO/'` automáticamente desde `GITHUB_REPOSITORY` (en Actions) o desde `REPO_FALLBACK` (en local, hoy `seti-web`).
+- Todas las rutas internas e imágenes pasan por `src/lib/base.ts` (`withBase()`), así funcionan igual en la raíz o en un subdirectorio.
+- `public/.nojekyll` evita que GitHub ignore la carpeta `_astro/` (donde van el CSS y el JS).
+- `robots.txt` y `site.webmanifest` se generan en el build respetando la base.
+
+### Opción A — GitHub Actions (recomendada)
+
+El workflow ya está incluido en `.github/workflows/deploy.yml`.
+
+1. Sube los cambios:
+
+   ```bash
+   git add .
+   git commit -m "Rutas con base para GitHub Pages"
+   git push origin main
+   ```
+
+2. En GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+3. Cada `push` a `main` compila y publica en `https://USUARIO.github.io/NOMBRE-REPO/`.
+4. Revisa la pestaña **Actions** hasta que “Deploy to GitHub Pages” termine en verde.
+
+No hace falta subir `dist/` ni `node_modules/`: están en `.gitignore` y el workflow ejecuta `npm ci && npm run build`.
+
+### Opción B — subir `dist/` a mano
 
 ```bash
-npm run build   # publica dist/
+npm run build
 ```
 
-Antes de salir a producción:
+Sube **el contenido** de `dist/` a la rama `gh-pages` (incluido el archivo `.nojekyll`) y en **Settings → Pages** elige *Deploy from a branch → gh-pages / (root)*.
 
-1. Ajusta `site` en `astro.config.mjs` y `site.url` en `src/data/site.ts` al dominio real.
+> ⚠️ Si subes `dist/` a `main`, la carpeta `_astro/` devolverá 404 porque GitHub ignora las carpetas que empiezan con `_`. `.nojekyll` lo evita.
+
+### Dominio propio o repo `USUARIO.github.io`
+
+Ahí el sitio vive en la raíz y la base debe ser `/`:
+
+```bash
+# PowerShell
+$env:BASE_PATH='/'; $env:SITE_URL='https://setitechnology.pe'; npm run build
+
+# bash
+BASE_PATH=/ SITE_URL=https://setitechnology.pe npm run build
+```
+
+En Actions basta con descomentar el bloque `env:` del workflow.
+
+### Comprobar el despliegue en local
+
+```bash
+npm run build
+node tools/serve.mjs 4400 /seti-web/    # sirve dist bajo la base real
+node tools/check-deploy.mjs 4400 /seti-web/
+```
+
+`check-deploy.mjs` recorre las 10 rutas principales y falla si algún recurso, script, imagen o enlace interno queda sin la base (detecta exactamente los 404 típicos).
+
+### Antes de publicar
+
+1. Ajusta `SITE_URL` (o `site` en `astro.config.mjs`) al dominio real: afecta canonical, Open Graph, JSON-LD, `robots.txt` y sitemap.
 2. Reemplaza `public/og-default.png` si cambia el mensaje de marca.
 3. Verifica el enlace de Instagram y añade otras redes en `src/data/site.ts`.
-4. Si el formulario debe enviar correos sin abrir el cliente de correo, conecta un endpoint (Formspree, Resend, Netlify Forms) en `src/pages/contacto.astro`.
+4. Si el formulario debe enviar correos sin abrir el cliente de correo, conecta un endpoint (Formspree, Resend) en `src/pages/contacto.astro`.
 
 ---
 
@@ -189,8 +248,8 @@ Antes de salir a producción:
 - `circulars.py` — recorta las ilustraciones circulares con transparencia.
 - `case_images.py` — genera las portadas de proyectos.
 - `og.py` — genera la imagen Open Graph.
-- `serve.mjs` — servidor estático mínimo para revisar `dist/`.
-- `shoot.mjs`, `segments.mjs`, `mapshots.mjs`, `preview.mjs` — QA visual con Puppeteer.
+- `serve.mjs` — servidor estático que respeta la base (`node tools/serve.mjs 4400 /seti-web/`).
+- `shoot.mjs`, `segments.mjs`, `mapshots.mjs`, `preview.mjs`, `check-deploy.mjs`, `check-map-base.mjs` — QA visual y verificación de rutas con Puppeteer.
 
 `preview/` guarda capturas de referencia del sitio ya construido (portada, servicios, cobertura, proyectos, blog, artículo, contacto y móvil).
 

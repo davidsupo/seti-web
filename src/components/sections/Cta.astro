@@ -3,6 +3,7 @@ import Section from '../ui/Section.astro';
 import Button from '../ui/Button.astro';
 import Icon from '../ui/Icon.astro';
 import { site, whatsappLink } from '../../data/site';
+import { withBase } from '../../lib/base';
 ---
 
 <Section tone="dark" class="cta">
@@ -45,7 +46,7 @@ import { site, whatsappLink } from '../../data/site';
         </a>
       </li>
       <li>
-        <a href="/cobertura/">
+        <a href={withBase('/cobertura/')}>
           <span class="cta__icon"><Icon name="map-pin" size={18} /></span>
           <span>
             <small>Visítanos</small>

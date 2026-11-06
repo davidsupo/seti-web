@@ -1,5 +1,6 @@
 ---
 import Icon from './ui/Icon.astro';
+import { withBase } from '../lib/base';
 
 interface Props {
   eyebrow: string;
@@ -15,6 +16,7 @@ interface Props {
 const { eyebrow, title, highlight, description, breadcrumb = [], image, imageAlt } = Astro.props;
 
 const parts = highlight && title.includes(highlight) ? title.split(highlight) : null;
+const imageSrc = image ? withBase(image) : undefined;
 ---
 
 <section class="phero">
@@ -26,11 +28,11 @@ const parts = highlight && title.includes(highlight) ? title.split(highlight) : 
         breadcrumb.length > 1 && (
           <nav class="phero__crumbs" aria-label="Ruta de navegación">
             <ol>
-              <li><a href="/">Inicio</a></li>
+              <li><a href={withBase('/')}>Inicio</a></li>
               {breadcrumb.map((item) => (
                 <li>
                   <Icon name="chevron-down" size={10} class="phero__crumb-sep" />
-                  {item.href ? <a href={item.href}>{item.label}</a> : <span>{item.label}</span>}
+                  {item.href ? <a href={withBase(item.href)}>{item.label}</a> : <span>{item.label}</span>}
                 </li>
               ))}
             </ol>
@@ -57,9 +59,9 @@ const parts = highlight && title.includes(highlight) ? title.split(highlight) : 
     </div>
 
     {
-      image && (
+      imageSrc && (
         <div class="phero__media" aria-hidden={imageAlt ? undefined : 'true'}>
-          <img src={image} alt={imageAlt ?? ''} width="720" height="540" loading="eager" decoding="async" />
+          <img src={imageSrc} alt={imageAlt ?? ''} width="720" height="540" loading="eager" decoding="async" />
         </div>
       )
     }

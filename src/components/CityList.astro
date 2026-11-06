@@ -1,5 +1,6 @@
 ---
 import { cities } from '../data/cities';
+import { withBase } from '../lib/base';
 import Icon from './ui/Icon.astro';
 
 interface Props {
@@ -15,7 +16,7 @@ const { variant = 'list', class: className } = Astro.props;
     cities.map((city) => (
       <li>
         <a
-          href={`/cobertura/#${city.id}`}
+          href={`${withBase('/cobertura/')}#${city.id}`}
           class="city"
           data-city-target={city.id}
           data-city-name={city.name}

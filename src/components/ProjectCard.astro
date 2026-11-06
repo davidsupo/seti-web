@@ -1,6 +1,7 @@
 ---
 import Icon from './ui/Icon.astro';
 import { getService } from '../data/services';
+import { withBase } from '../lib/base';
 import type { Project } from '../data/projects';
 
 interface Props {
@@ -19,7 +20,7 @@ const serviceLabels = project.services
     {
       project.image ? (
         <img
-          src={project.image}
+          src={withBase(project.image)}
           alt={project.imageAlt ?? project.title}
           width="800"
           height="500"
@@ -61,7 +62,7 @@ const serviceLabels = project.services
       <ul class="proj__tags">
         {serviceLabels.map((label) => <li>{label}</li>)}
       </ul>
-      <a href="/contacto/" class="link-arrow">
+      <a href={withBase('/contacto/')} class="link-arrow">
         Proyecto similar
         <Icon name="arrow-right" size={14} />
       </a>

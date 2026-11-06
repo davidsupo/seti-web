@@ -11,6 +11,7 @@ import Cta from '../../components/sections/Cta.astro';
 import Icon from '../../components/ui/Icon.astro';
 import { formatDate, readingTime } from '../../lib/format';
 import { breadcrumbSchema, organizationSchema } from '../../lib/schema';
+import { withBase } from '../../lib/base';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
@@ -41,7 +42,7 @@ const description =
     breadcrumb={[{ label: 'Blog', href: '/blog/' }]}
   >
     <div class="blog-hero-actions">
-      <a href="/rss.xml" class="rss">
+      <a href={withBase('/rss.xml')} class="rss">
         <span class="rss__dot" aria-hidden="true"></span>
         Suscríbete por RSS
       </a>
@@ -62,7 +63,7 @@ const description =
       <div class="container">
         {latest && (
           <article class="featured" data-reveal>
-            <a href={`/blog/${latest.id}/`} class="featured__media" aria-hidden="true" tabindex="-1">
+            <a href={withBase(`/blog/${latest.id}/`)} class="featured__media" aria-hidden="true" tabindex="-1">
               <BlogCover icon={latest.data.icon} label="Lo último" />
             </a>
             <div class="featured__body">
@@ -78,7 +79,7 @@ const description =
                 <span>{readingTime(latest.body)} min de lectura</span>
               </div>
               <h2 class="featured__title">
-                <a href={`/blog/${latest.id}/`}>{latest.data.title}</a>
+                <a href={withBase(`/blog/${latest.id}/`)}>{latest.data.title}</a>
               </h2>
               <p class="featured__desc">{latest.data.description}</p>
               <ul class="featured__tags">

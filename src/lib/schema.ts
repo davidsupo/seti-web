@@ -1,16 +1,23 @@
 import { site } from '../data/site';
 import { cities, hq } from '../data/cities';
+import { withBase, BASE } from './base';
 import type { Faq } from '../data/faqs';
+
+const origin = (import.meta.env.SITE || site.url).replace(/\/+$/, '');
+/** Raíz absoluta del sitio, incluida la base de GitHub Pages. */
+const root = `${origin}${BASE}`;
+/** Convierte una ruta interna en URL absoluta respetando la base. */
+const abs = (path = '') => `${origin}${withBase(path)}`;
 
 /** Organización (usada en todas las páginas). */
 export const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  '@id': `${site.url}/#organization`,
+  '@id': `${root}#organization`,
   name: site.name,
   alternateName: 'SETI',
-  url: site.url,
-  logo: `${site.url}/brand/seti-logo-dark.png`,
+  url: root,
+  logo: abs('/brand/seti-logo-dark.png'),
   description: site.description,
   slogan: site.tagline,
   email: site.email.label,
@@ -37,10 +44,10 @@ export const organizationSchema = {
 export const localBusinessSchema = {
   '@context': 'https://schema.org',
   '@type': 'SecuritySystemInstallationService',
-  '@id': `${site.url}/#localbusiness`,
+  '@id': `${root}#localbusiness`,
   name: site.name,
-  image: `${site.url}/og-default.png`,
-  url: site.url,
+  image: abs('/og-default.png'),
+  url: root,
   telephone: `+51 ${site.phone.label}`,
   email: site.email.label,
   priceRange: '$$',
@@ -58,17 +65,17 @@ export const localBusinessSchema = {
       closes: '18:00',
     },
   ],
-  parentOrganization: { '@id': `${site.url}/#organization` },
+  parentOrganization: { '@id': `${root}#organization` },
 };
 
 export const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  '@id': `${site.url}/#website`,
-  url: site.url,
+  '@id': `${root}#website`,
+  url: root,
   name: site.name,
   inLanguage: 'es-PE',
-  publisher: { '@id': `${site.url}/#organization` },
+  publisher: { '@id': `${root}#organization` },
 };
 
 export const breadcrumbSchema = (items: { label: string; href?: string }[]) => ({
@@ -78,7 +85,7 @@ export const breadcrumbSchema = (items: { label: string; href?: string }[]) => (
     '@type': 'ListItem',
     position: index + 1,
     name: item.label,
-    ...(item.href ? { item: `${site.url}${item.href}` } : {}),
+    ...(item.href ? { item: abs(item.href) } : {}),
   })),
 });
 
@@ -100,12 +107,12 @@ export const serviceSchema = (
 ) => ({
   '@context': 'https://schema.org',
   '@type': 'Service',
-  '@id': `${site.url}${url}#service`,
+  '@id': `${abs(url)}#service`,
   name,
   description,
-  url: `${site.url}${url}`,
+  url: abs(url),
   serviceType: name,
-  provider: { '@id': `${site.url}/#organization` },
+  provider: { '@id': `${root}#organization` },
   areaServed: cities.map((city) => ({ '@type': 'City', name: city.name })),
   ...(slug ? { identifier: slug } : {}),
 });

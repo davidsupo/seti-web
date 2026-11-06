@@ -4,6 +4,7 @@ import '../styles/base.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { site } from '../data/site';
+import { withBase } from '../lib/base';
 
 interface Props {
   title: string;
@@ -26,10 +27,11 @@ const {
   bodyClass,
 } = Astro.props;
 
-const isHome = Astro.url.pathname === '/';
+const isHome = Astro.url.pathname === withBase('/');
 const fullTitle = isHome ? `${site.name} — ${site.tagline}` : `${title} | ${site.name}`;
-const canonical = new URL(Astro.url.pathname, site.url).href;
-const ogImage = new URL(image, site.url).href;
+const siteOrigin = Astro.site ?? new URL(site.url);
+const canonical = new URL(Astro.url.pathname, siteOrigin).href;
+const ogImage = new URL(withBase(image), siteOrigin).href;
 const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 ---
 
@@ -66,9 +68,10 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
     <meta name="twitter:image" content={ogImage} />
 
     <!-- Iconos -->
-    <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="icon" href={withBase('/favicon.ico')} sizes="any" />
+    <link rel="icon" type="image/png" href={withBase('/favicon-32.png')} sizes="32x32" />
+    <link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} />
+    <link rel="manifest" href={withBase('/site.webmanifest')} />
 
     <!-- Tipografías -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -78,12 +81,12 @@ const jsonLdBlocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@500;600;700&display=swap"
     />
 
-    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="sitemap" href={withBase('/sitemap-index.xml')} />
     <link
       rel="alternate"
       type="application/rss+xml"
       title={`Blog de ${site.name}`}
-      href="/rss.xml"
+      href={withBase('/rss.xml')}
     />
 
     {jsonLdBlocks.map((block) => (

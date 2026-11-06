@@ -1,4 +1,6 @@
 ---
+import { withBase } from '../../lib/base';
+
 interface Props {
   variant?: 'light' | 'dark';
   height?: number;
@@ -7,11 +9,11 @@ interface Props {
 }
 
 const { variant = 'dark', height = 38, class: className, href = '/' } = Astro.props;
-const src = variant === 'light' ? '/brand/seti-logo-light.png' : '/brand/seti-logo-dark.png';
+const src = withBase(variant === 'light' ? '/brand/seti-logo-light.png' : '/brand/seti-logo-dark.png');
 const width = Math.round(height * 2.527);
 ---
 
-<a href={href} class:list={['logo', className]} aria-label="SETI Technology — Inicio">
+<a href={withBase(href)} class:list={['logo', className]} aria-label="SETI Technology — Inicio">
   <img
     src={src}
     alt="SETI Technology"

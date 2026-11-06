@@ -2,6 +2,7 @@
 import { site, whatsappLink } from '../data/site';
 import { services } from '../data/services';
 import { cityCount } from '../data/cities';
+import { withBase } from '../lib/base';
 import Icon from './ui/Icon.astro';
 import Logo from './ui/Logo.astro';
 
@@ -45,7 +46,7 @@ const year = new Date().getFullYear();
       <h2 class="footer__title">Servicios</h2>
       <ul class="footer__list">
         {services.map((service) => (
-          <li><a href={`/servicios/${service.slug}/`}>{service.shortTitle}</a></li>
+          <li><a href={withBase(`/servicios/${service.slug}/`)}>{service.shortTitle}</a></li>
         ))}
       </ul>
     </nav>
@@ -53,12 +54,12 @@ const year = new Date().getFullYear();
     <nav class="footer__col" aria-label="Empresa">
       <h2 class="footer__title">Empresa</h2>
       <ul class="footer__list">
-        <li><a href="/#nosotros">Nosotros</a></li>
-        <li><a href="/proyectos/">Proyectos</a></li>
-        <li><a href="/cobertura/">Cobertura</a></li>
-        <li><a href="/blog/">Blog</a></li>
-        <li><a href="/contacto/">Contacto</a></li>
-        <li><a href="/privacidad/">Privacidad</a></li>
+        <li><a href={withBase('/#nosotros')}>Nosotros</a></li>
+        <li><a href={withBase('/proyectos/')}>Proyectos</a></li>
+        <li><a href={withBase('/cobertura/')}>Cobertura</a></li>
+        <li><a href={withBase('/blog/')}>Blog</a></li>
+        <li><a href={withBase('/contacto/')}>Contacto</a></li>
+        <li><a href={withBase('/privacidad/')}>Privacidad</a></li>
       </ul>
     </nav>
 

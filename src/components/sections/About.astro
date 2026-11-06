@@ -5,6 +5,7 @@ import Button from '../ui/Button.astro';
 import Icon from '../ui/Icon.astro';
 import { differentiators } from '../../data/benefits';
 import { cityCountLabel } from '../../data/cities';
+import { withBase } from '../../lib/base';
 ---
 
 <Section id="nosotros" class="about">
@@ -32,7 +33,7 @@ import { cityCountLabel } from '../../data/cities';
 
       <div class="about__cta">
         <Button href="/proyectos/" variant="outline" icon="arrow-up-right">Ver proyectos</Button>
-        <a href="/contacto/" class="link-arrow">
+        <a href={withBase('/contacto/')} class="link-arrow">
           Hablar con un ingeniero
           <Icon name="arrow-right" size={15} />
         </a>
@@ -42,7 +43,7 @@ import { cityCountLabel } from '../../data/cities';
     <div class="about__media" data-reveal style="--reveal-delay:120ms">
       <div class="about__frame">
         <img
-          src="/images/tecnico-instalacion.webp"
+          src={withBase('/images/tecnico-instalacion.webp')}
           alt="Técnico de SETI Technology instalando una cámara de videovigilancia"
           width="1024"
           height="1024"

@@ -47,6 +47,7 @@ const id = 'coverage-map';
 <script>
   import L from 'leaflet';
   import { cities, mapConfig } from '../data/cities';
+  import { withBase } from '../lib/base';
 
   const init = () => {
     const el = document.getElementById('coverage-map');
@@ -107,7 +108,7 @@ const id = 'coverage-map';
         <p class="map-popup__region">${escape(city.region)} · Perú</p>
         <p class="map-popup__text">${escape(city.summary)}</p>
         <p class="map-popup__meta">${city.services.length} líneas de servicio disponibles</p>
-        <a class="map-popup__link" href="/contacto/">Coordinar visita →</a>
+        <a class="map-popup__link" href="${withBase('/contacto/')}">Coordinar visita →</a>
       </div>
     `;
 

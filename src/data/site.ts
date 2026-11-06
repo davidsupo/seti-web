@@ -3,6 +3,8 @@
  * Único lugar donde viven los datos de contacto, navegación y redes.
  */
 
+import { withBase } from '../lib/base';
+
 export interface NavItem {
   label: string;
   href: string;
@@ -46,42 +48,42 @@ export const site = {
 } as const;
 
 export const nav: NavItem[] = [
-  { label: 'Inicio', href: '/' },
+  { label: 'Inicio', href: withBase('/') },
   {
     label: 'Servicios',
-    href: '/servicios/',
+    href: withBase('/servicios/'),
     children: [
       {
         label: 'Alarmas de intrusión',
-        href: '/servicios/alarmas-de-intrusion/',
+        href: withBase('/servicios/alarmas-de-intrusion/'),
         description: 'Detección interior, exterior y perimetral.',
       },
       {
         label: 'Detección de incendio',
-        href: '/servicios/deteccion-de-incendio/',
+        href: withBase('/servicios/deteccion-de-incendio/'),
         description: 'Sistemas bajo normativa NFPA 72 y NFPA 70.',
       },
       {
         label: 'Videovigilancia',
-        href: '/servicios/videovigilancia/',
+        href: withBase('/servicios/videovigilancia/'),
         description: 'CCTV y analítica de video con IA.',
       },
       {
         label: 'Control de acceso',
-        href: '/servicios/control-de-acceso/',
+        href: withBase('/servicios/control-de-acceso/'),
         description: 'Biometría, placas y control de personal.',
       },
       {
         label: 'Conectividad y redes',
-        href: '/servicios/conectividad-y-redes/',
+        href: withBase('/servicios/conectividad-y-redes/'),
         description: 'Cableado estructurado, fibra óptica y radioenlaces.',
       },
     ],
   },
-  { label: 'Cobertura', href: '/cobertura/' },
-  { label: 'Proyectos', href: '/proyectos/' },
-  { label: 'Blog', href: '/blog/' },
-  { label: 'Contacto', href: '/contacto/' },
+  { label: 'Cobertura', href: withBase('/cobertura/') },
+  { label: 'Proyectos', href: withBase('/proyectos/') },
+  { label: 'Blog', href: withBase('/blog/') },
+  { label: 'Contacto', href: withBase('/contacto/') },
 ];
 
 export const stats = [

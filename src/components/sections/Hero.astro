@@ -2,11 +2,12 @@
 import Button from '../ui/Button.astro';
 import Icon from '../ui/Icon.astro';
 import { stats } from '../../data/site';
+import { withBase } from '../../lib/base';
 ---
 
 <section class="hero" id="inicio">
   <div class="hero__bg" aria-hidden="true">
-    <img src="/images/circuito-fondo.webp" alt="" class="hero__bg-img" width="1438" height="560" />
+    <img src={withBase('/images/circuito-fondo.webp')} alt="" class="hero__bg-img" width="1438" height="560" />
     <div class="hero__mesh"></div>
     <div class="hero__orb hero__orb--a"></div>
     <div class="hero__orb hero__orb--b"></div>
@@ -49,7 +50,7 @@ import { stats } from '../../data/site';
       <div class="hero__ring" aria-hidden="true"></div>
       <figure class="hero__figure">
         <img
-          src="/images/ia-projects.webp"
+          src={withBase('/images/ia-projects.webp')}
           alt="Seguridad electrónica potenciada con inteligencia artificial"
           width="1400"
           height="933"

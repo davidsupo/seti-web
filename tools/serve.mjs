@@ -1,5 +1,6 @@
-// Servidor estático mínimo para revisar el build (sin dependencias).
-// Uso: node tools/serve.mjs [puerto]
+// Servidor estático local que respeta la base de GitHub Pages.
+// Uso: node tools/serve.mjs [puerto] [base]
+//   node tools/serve.mjs 4321 /seti-technology/
 import { createServer } from 'node:http';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
@@ -7,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'dist');
 const port = Number(process.argv[2] ?? 4321);
+const base = (process.argv[3] ?? '/').replace(/\/?$/, '/');
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',
@@ -27,7 +29,10 @@ const MIME = {
 };
 
 const resolve = async (urlPath) => {
-  const clean = decodeURIComponent(urlPath.split('?')[0]);
+  let clean = decodeURIComponent(urlPath.split('?')[0]);
+  if (!clean.startsWith(base)) return null;
+  clean = clean.slice(base.length - 1);
+
   let file = path.join(root, clean);
   if (!file.startsWith(root)) return null;
 
@@ -75,5 +80,5 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(port, '127.0.0.1', () => {
-  console.log(`SETI preview: http://127.0.0.1:${port}`);
+  console.log(`SETI preview: http://127.0.0.1:${port}${base}`);
 });

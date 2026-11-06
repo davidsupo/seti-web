@@ -8,6 +8,7 @@ import { site, whatsappLink } from '../data/site';
 import { cities } from '../data/cities';
 import { services } from '../data/services';
 import { breadcrumbSchema, organizationSchema } from '../lib/schema';
+import { withBase } from '../lib/base';
 
 const title = 'Contacto';
 const description =
@@ -98,7 +99,7 @@ const channels = [
           <p class="office__city">{site.headquarters.label}</p>
           <p class="office__note">
             Puntos operativos en {cities.length} ciudades. Revisa la
-            <a href="/cobertura/">cobertura completa</a>.
+            <a href={withBase('/cobertura/')}>cobertura completa</a>.
           </p>
           <div class="office__hours">
             <Icon name="clock" size={15} />
@@ -174,7 +175,7 @@ const channels = [
             <input type="checkbox" id="consent" name="consent" required />
             <span>
               Autorizo que SETI Technology me contacte para responder esta solicitud.
-              Consulta la <a href="/privacidad/">política de privacidad</a>.
+              Consulta la <a href={withBase('/privacidad/')}>política de privacidad</a>.
             </span>
           </label>
 

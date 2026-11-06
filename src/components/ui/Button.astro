@@ -11,6 +11,7 @@ interface Props {
 }
 
 import Icon from './Icon.astro';
+import { withBase } from '../../lib/base';
 
 const {
   variant = 'primary',
@@ -26,11 +27,12 @@ const {
 const Tag = href ? 'a' : 'button';
 const classes = ['btn', `btn--${variant}`, `btn--${size}`, className].filter(Boolean).join(' ');
 const rel = external ? 'noopener noreferrer' : undefined;
+const resolvedHref = href ? withBase(href) : undefined;
 ---
 
 <Tag
   class={classes}
-  href={href}
+  href={resolvedHref}
   type={href ? undefined : type}
   target={external ? '_blank' : undefined}
   rel={rel}

@@ -1,11 +1,13 @@
 ---
 import { nav, site, whatsappLink } from '../data/site';
+import { withBase } from '../lib/base';
 import Icon from './ui/Icon.astro';
 import Logo from './ui/Logo.astro';
 
 const pathname = Astro.url.pathname;
+const homeHref = withBase('/');
 const isActive = (href: string) =>
-  href === '/' ? pathname === '/' : pathname.startsWith(href.replace(/\/$/, ''));
+  href === homeHref ? pathname === homeHref : pathname.startsWith(href.replace(/\/$/, ''));
 const phoneDigits = site.phone.label.replace(/\s+/g, '');
 ---
 
@@ -52,7 +54,7 @@ const phoneDigits = site.phone.label.replace(/\s+/g, '');
         <Icon name="phone" size={16} />
         <span>{site.phone.label}</span>
       </a>
-      <a href="/contacto/" class="btn-quote">Cotizar proyecto</a>
+      <a href={withBase('/contacto/')} class="btn-quote">Cotizar proyecto</a>
       <button class="burger" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobile-menu">
         <span></span><span></span><span></span>
       </button>

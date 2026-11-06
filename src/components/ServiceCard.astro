@@ -1,5 +1,6 @@
 ---
 import Icon from './ui/Icon.astro';
+import { withBase } from '../lib/base';
 import type { Service } from '../data/services';
 
 interface Props {
@@ -8,7 +9,7 @@ interface Props {
 }
 
 const { service, compact = false } = Astro.props;
-const href = `/servicios/${service.slug}/`;
+const href = withBase(`/servicios/${service.slug}/`);
 ---
 
 <article class:list={['svc', compact && 'svc--compact']}>

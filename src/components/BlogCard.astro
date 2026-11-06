@@ -3,6 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 import BlogCover from './BlogCover.astro';
 import Icon from './ui/Icon.astro';
 import { formatDate, readingTime } from '../lib/format';
+import { withBase } from '../lib/base';
 
 interface Props {
   post: CollectionEntry<'blog'>;
@@ -11,7 +12,7 @@ interface Props {
 
 const { post, featured = false } = Astro.props;
 const { title, description, pubDate, tags, cover, coverAlt, icon, author } = post.data;
-const href = `/blog/${post.id}/`;
+const href = withBase(`/blog/${post.id}/`);
 const minutes = readingTime(post.body);
 ---
 
@@ -19,7 +20,7 @@ const minutes = readingTime(post.body);
   <a href={href} class="blog-card__media" tabindex="-1" aria-hidden="true">
     {
       cover ? (
-        <img src={cover} alt={coverAlt ?? ''} width="800" height="450" loading="lazy" decoding="async" />
+        <img src={withBase(cover)} alt={coverAlt ?? ''} width="800" height="450" loading="lazy" decoding="async" />
       ) : (
         <BlogCover icon={icon} />
       )
