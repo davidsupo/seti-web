@@ -1,0 +1,230 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/ui/Section.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import CoverageMap from '../components/CoverageMap.astro';
+import CityList from '../components/CityList.astro';
+import Cta from '../components/sections/Cta.astro';
+import Icon from '../components/ui/Icon.astro';
+import { cities, cityCount, regions } from '../data/cities';
+import { breadcrumbSchema, organizationSchema } from '../lib/schema';
+
+const standards = [
+  {
+    icon: 'ruler',
+    title: 'Misma ingeniería',
+    text: 'Cada proyecto se calcula con el mismo criterio técnico, sin importar la ciudad: planos, memoria de cálculo y protocolo de pruebas.',
+  },
+  {
+    icon: 'headset',
+    title: 'Soporte local',
+    text: 'Puntos operativos con capacidad de respuesta en sitio y coordinación de brigadas para plazas sin oficina permanente.',
+  },
+  {
+    icon: 'globe',
+    title: 'Monitoreo remoto',
+    text: 'Supervisión centralizada de sistemas desde Trujillo, con acceso remoto seguro a plataformas de video y accesos.',
+  },
+];
+
+const title = 'Cobertura';
+const description = `Puntos operativos en ${cityCount} ciudades del Perú: Piura, Chiclayo, Jaén, Trujillo, Chimbote, Lima y Arequipa.`;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  jsonLd={[
+    organizationSchema,
+    breadcrumbSchema([
+      { label: 'Inicio', href: '/' },
+      { label: 'Cobertura' },
+    ]),
+  ]}
+>
+  <PageHero
+    eyebrow="Cobertura"
+    title="Cobertura estratégica en las principales ciudades del país"
+    highlight="principales ciudades"
+    description={`${cityCount} puntos operativos en ${regions.length} regiones. Selecciona una ciudad en el mapa para ver su alcance.`}
+    breadcrumb={[{ label: 'Cobertura', href: '/cobertura/' }]}
+  />
+
+  <Section>
+    <div class="container">
+      <div class="cov-head">
+        <p class="cov-head__label">
+          <span class="pulse" aria-hidden="true"></span>
+          Mapa interactivo · {cityCount} puntos operativos
+        </p>
+        <p class="cov-head__hint">Haz clic en un pin o en una tarjeta para enfocar la ciudad.</p>
+      </div>
+
+      <CoverageMap height="clamp(360px, 58vh, 620px)" />
+    </div>
+  </Section>
+
+  <Section tone="mist">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Puntos operativos"
+        title="Dónde estamos"
+        highlight="estamos"
+        description="La sede principal está en Trujillo; el resto son puntos operativos con cobertura de instalación y soporte."
+      />
+
+      <div class="cities-wrap">
+        <CityList variant="cards" />
+      </div>
+
+      <p class="cities-note">
+        <Icon name="sparkles" size={16} />
+        ¿Tu ciudad no está en la lista? Evaluamos proyectos en todo el Perú coordinando brigadas de
+        instalación. <a href="/contacto/">Consúltanos</a>.
+      </p>
+    </div>
+  </Section>
+
+  <Section>
+    <div class="container">
+      <SectionHeading
+        eyebrow="Estándar nacional"
+        title="Lo mismo en Piura que en Arequipa"
+        highlight="Piura"
+        description="La cobertura no es solo presencia: es mantener el mismo estándar de instalación y soporte en cada plaza."
+      />
+
+      <ul class="standards">
+        {
+          standards.map((item, index) => (
+            <li data-reveal style={`--reveal-delay:${index * 90}ms`}>
+              <span class="standards__icon"><Icon name={item.icon as any} size={22} /></span>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </Section>
+
+  <Cta />
+</BaseLayout>
+
+<script>
+  // Si se llega con un hash (#lima), enfoca esa ciudad en el mapa
+  const hash = window.location.hash.replace('#', '');
+  if (hash) {
+    const target = document.querySelector<HTMLElement>(`[data-city-target="${hash}"]`);
+    target?.click();
+  }
+</script>
+
+<style>
+  .cov-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .cov-head__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--blue-500);
+  }
+
+  .pulse {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--teal-400);
+    box-shadow: 0 0 0 4px rgba(61, 187, 200, 0.16);
+  }
+
+  .cov-head__hint {
+    font-size: 0.76rem;
+    color: var(--ink-500);
+  }
+
+  .cities-wrap {
+    margin-top: 2.25rem;
+    padding: 1.5rem;
+    background: var(--navy-900);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(41, 226, 249, 0.16);
+  }
+
+  .cities-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin-top: 1.25rem;
+    font-size: 0.85rem;
+    color: var(--ink-500);
+  }
+
+  .cities-note svg {
+    flex: none;
+    margin-top: 0.2rem;
+    color: var(--teal-400);
+  }
+
+  .cities-note a {
+    color: var(--blue-500);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .standards {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+  }
+
+  .standards li {
+    padding: 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--surface-0);
+  }
+
+  .standards__icon {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    margin-bottom: 0.85rem;
+    border-radius: 12px;
+    background: var(--surface-1);
+    color: var(--navy-800);
+  }
+
+  .standards h3 {
+    font-size: var(--step-1);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin-bottom: 0.4rem;
+  }
+
+  .standards p {
+    font-size: 0.86rem;
+    line-height: 1.7;
+    color: var(--ink-500);
+  }
+
+  @media (min-width: 760px) {
+    .standards {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

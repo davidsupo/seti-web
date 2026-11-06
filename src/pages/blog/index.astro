@@ -1,0 +1,292 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import Section from '../../components/ui/Section.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import Button from '../../components/ui/Button.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import BlogCover from '../../components/BlogCover.astro';
+import Cta from '../../components/sections/Cta.astro';
+import Icon from '../../components/ui/Icon.astro';
+import { formatDate, readingTime } from '../../lib/format';
+import { breadcrumbSchema, organizationSchema } from '../../lib/schema';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
+
+const [latest, ...rest] = posts;
+const title = 'Blog';
+const description =
+  'Criterios técnicos sobre seguridad electrónica: videovigilancia, detección de incendio, control de acceso y redes. Una publicación nueva cada semana.';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  jsonLd={[
+    organizationSchema,
+    breadcrumbSchema([
+      { label: 'Inicio', href: '/' },
+      { label: 'Blog' },
+    ]),
+  ]}
+>
+  <PageHero
+    eyebrow="Blog · SETI Insights"
+    title="Notas de campo sobre seguridad electrónica"
+    highlight="seguridad electrónica"
+    description="Publicamos una nota nueva cada semana: criterios técnicos, normativa y decisiones reales de proyecto, sin relleno comercial."
+    breadcrumb={[{ label: 'Blog', href: '/blog/' }]}
+  >
+    <div class="blog-hero-actions">
+      <a href="/rss.xml" class="rss">
+        <span class="rss__dot" aria-hidden="true"></span>
+        Suscríbete por RSS
+      </a>
+      <span class="blog-hero-count">{posts.length} publicaciones</span>
+    </div>
+  </PageHero>
+
+  {posts.length === 0 ? (
+    <Section>
+      <div class="container empty">
+        <Icon name="sparkles" size={28} />
+        <h2>Aún no hay publicaciones</h2>
+        <p>Estamos preparando el primer artículo. Vuelve pronto.</p>
+      </div>
+    </Section>
+  ) : (
+    <Section>
+      <div class="container">
+        {latest && (
+          <article class="featured" data-reveal>
+            <a href={`/blog/${latest.id}/`} class="featured__media" aria-hidden="true" tabindex="-1">
+              <BlogCover icon={latest.data.icon} label="Lo último" />
+            </a>
+            <div class="featured__body">
+              <p class="featured__flag">
+                <span class="featured__dot" aria-hidden="true"></span>
+                Lo último
+              </p>
+              <div class="featured__meta">
+                <time datetime={latest.data.pubDate.toISOString()}>
+                  {formatDate(latest.data.pubDate)}
+                </time>
+                <span aria-hidden="true">·</span>
+                <span>{readingTime(latest.body)} min de lectura</span>
+              </div>
+              <h2 class="featured__title">
+                <a href={`/blog/${latest.id}/`}>{latest.data.title}</a>
+              </h2>
+              <p class="featured__desc">{latest.data.description}</p>
+              <ul class="featured__tags">
+                {latest.data.tags.map((tag) => <li>{tag}</li>)}
+              </ul>
+              <Button href={`/blog/${latest.id}/`} icon="arrow-right">Leer artículo</Button>
+            </div>
+          </article>
+        )}
+      </div>
+    </Section>
+  )}
+
+  {
+    rest.length > 0 && (
+      <Section tone="mist">
+        <div class="container">
+          <SectionHeading
+            eyebrow="Archivo"
+            title="Todas las publicaciones"
+            highlight="publicaciones"
+            description="Ordenadas de la más reciente a la más antigua."
+          />
+
+          <div class="blog-grid">
+            {rest.map((post, index) => (
+              <div data-reveal style={`--reveal-delay:${(index % 3) * 80}ms`}>
+                <BlogCard post={post} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </Section>
+    )
+  }
+
+  <Cta />
+</BaseLayout>
+
+<style>
+  .blog-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: 1rem;
+  }
+
+  .rss {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cyan-300);
+    border: 1px solid rgba(41, 226, 249, 0.35);
+    border-radius: var(--radius-pill);
+    transition: background var(--dur) var(--ease-out);
+  }
+
+  .rss:hover {
+    background: rgba(41, 226, 249, 0.1);
+  }
+
+  .rss__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cyan-300);
+  }
+
+  .blog-hero-count {
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  /* ---------- Destacado ---------- */
+  .featured {
+    display: grid;
+    gap: 0;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface-0);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .featured__media {
+    display: block;
+    min-height: 260px;
+  }
+
+  .featured__media :global(.bcover) {
+    height: 100%;
+  }
+
+  .featured__body {
+    display: grid;
+    gap: 0.85rem;
+    align-content: center;
+    padding: clamp(1.5rem, 3.5vw, 2.75rem);
+  }
+
+  .featured__flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--teal-400);
+  }
+
+  .featured__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--teal-400);
+    box-shadow: 0 0 0 4px rgba(61, 187, 200, 0.14);
+  }
+
+  .featured__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    font-size: 0.72rem;
+    color: var(--ink-500);
+  }
+
+  .featured__title {
+    font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+    line-height: 1.02;
+    letter-spacing: 0.005em;
+  }
+
+  .featured__title a:hover {
+    color: var(--blue-500);
+  }
+
+  .featured__desc {
+    font-size: var(--step-0);
+    line-height: 1.7;
+    color: var(--ink-500);
+    max-width: 52ch;
+  }
+
+  .featured__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .featured__tags li {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.66rem;
+    color: var(--blue-500);
+    background: var(--surface-1);
+    border-radius: var(--radius-pill);
+  }
+
+  .featured__body :global(.btn) {
+    justify-self: start;
+    margin-top: 0.25rem;
+  }
+
+  /* ---------- Grid ---------- */
+  .blog-grid {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+  }
+
+  .empty {
+    display: grid;
+    justify-items: center;
+    gap: 0.75rem;
+    text-align: center;
+    padding-block: 4rem;
+    color: var(--ink-500);
+  }
+
+  .empty h2 {
+    font-size: var(--step-2);
+    text-transform: uppercase;
+  }
+
+  @media (min-width: 720px) {
+    .blog-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 900px) {
+    .featured {
+      grid-template-columns: 0.95fr 1.05fr;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .blog-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

@@ -1,0 +1,103 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/ui/Section.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import Cta from '../components/sections/Cta.astro';
+import { projects, sectors } from '../data/projects';
+import { breadcrumbSchema, organizationSchema } from '../lib/schema';
+
+const title = 'Proyectos';
+const description =
+  'Casos representativos de proyectos de seguridad electrónica: industria, retail, educación, minería y corporativo en Perú.';
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  jsonLd={[
+    organizationSchema,
+    breadcrumbSchema([
+      { label: 'Inicio', href: '/' },
+      { label: 'Proyectos' },
+    ]),
+  ]}
+>
+  <PageHero
+    eyebrow="Proyectos"
+    title="Sistemas que ya están en operación"
+    highlight="en operación"
+    description="Cada proyecto empieza con un riesgo concreto y termina con un sistema probado. Estos son algunos de los escenarios que resolvemos."
+    breadcrumb={[{ label: 'Proyectos', href: '/proyectos/' }]}
+  >
+    <ul class="sectors">
+      {sectors.map((sector) => <li>{sector}</li>)}
+    </ul>
+  </PageHero>
+
+  <Section>
+    <div class="container">
+      <SectionHeading
+        eyebrow="Casos"
+        title="Proyectos por sector"
+        highlight="sector"
+        description="Los datos de cada caso son representativos del tipo de solución implementada."
+      />
+
+      <div class="grid">
+        {
+          projects.map((project, index) => (
+            <div data-reveal style={`--reveal-delay:${(index % 3) * 80}ms`}>
+              <ProjectCard project={project} />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
+
+  <Cta />
+</BaseLayout>
+
+<style>
+  .sectors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 1rem;
+  }
+
+  .sectors li {
+    padding: 0.35rem 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: var(--radius-pill);
+  }
+
+  .grid {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+  }
+
+  .grid > :global(*) {
+    min-width: 0;
+  }
+
+  @media (min-width: 720px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

@@ -1,0 +1,217 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import Section from '../../components/ui/Section.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import Process from '../../components/sections/Process.astro';
+import Cta from '../../components/sections/Cta.astro';
+import Icon from '../../components/ui/Icon.astro';
+import { services } from '../../data/services';
+import { breadcrumbSchema, organizationSchema } from '../../lib/schema';
+
+const title = 'Servicios';
+const description =
+  'Alarmas de intrusión, detección de incendio, videovigilancia, control de acceso y conectividad. Diseño, instalación, mantenimiento y soporte técnico.';
+
+const capabilities = [
+  { icon: 'ruler', title: 'Diseño e ingeniería', text: 'Levantamiento, memoria de cálculo y planos antes de cotizar.' },
+  { icon: 'tools', title: 'Implementación', text: 'Instalación supervisada, integración y configuración en sitio.' },
+  { icon: 'wrench', title: 'Mantenimiento', text: 'Planes preventivos y correctivos con repuestos originales.' },
+  { icon: 'headset', title: 'Soporte post-venta', text: 'Atención remota y en sitio, con tiempos acordados.' },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  jsonLd={[
+    organizationSchema,
+    breadcrumbSchema([
+      { label: 'Inicio', href: '/' },
+      { label: 'Servicios' },
+    ]),
+  ]}
+>
+  <PageHero
+    eyebrow="Servicios"
+    title="Cinco líneas, un mismo ecosistema"
+    highlight="ecosistema"
+    description="Cada servicio se puede contratar por separado, pero su verdadero valor aparece cuando se integran: alarmas, incendio, video, accesos y la red que los conecta."
+    breadcrumb={[{ label: 'Servicios', href: '/servicios/' }]}
+  >
+    <ul class="hero-list">
+      {
+        services.map((service) => (
+          <li>
+            <a href={`/servicios/${service.slug}/`}>
+              <Icon name={service.icon as any} size={16} />
+              {service.shortTitle}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </PageHero>
+
+  <Section>
+    <div class="container">
+      <SectionHeading
+        eyebrow="Qué hacemos"
+        title="Seguridad electrónica de punta a punta"
+        highlight="punta a punta"
+        description="Desde la ingeniería del proyecto hasta el mantenimiento del sistema en operación."
+      />
+
+      <div class="services-grid">
+        {
+          services.map((service, index) => (
+            <div data-reveal style={`--reveal-delay:${index * 70}ms`}>
+              <ServiceCard service={service} />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
+
+  <Section tone="mist">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Alcance"
+        title="Lo que incluye trabajar con nosotros"
+        highlight="trabajar"
+        description="El mismo acompañamiento para un local comercial que para una planta industrial."
+      />
+
+      <ul class="caps">
+        {
+          capabilities.map((cap) => (
+            <li>
+              <span class="caps__icon"><Icon name={cap.icon as any} size={20} /></span>
+              <h3>{cap.title}</h3>
+              <p>{cap.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </Section>
+
+  <Process />
+  <Cta />
+</BaseLayout>
+
+<style>
+  .hero-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .hero-list a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.5rem 0.85rem;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: var(--radius-pill);
+    transition:
+      border-color var(--dur) var(--ease-out),
+      color var(--dur) var(--ease-out),
+      background var(--dur) var(--ease-out);
+  }
+
+  .hero-list a:hover {
+    border-color: rgba(41, 226, 249, 0.5);
+    background: rgba(41, 226, 249, 0.08);
+    color: #fff;
+  }
+
+  .hero-list svg {
+    color: var(--teal-400);
+  }
+
+  .services-grid {
+    display: grid;
+    gap: 1.15rem;
+    margin-top: 2.5rem;
+  }
+
+  .services-grid > :global(*) {
+    min-width: 0;
+  }
+
+  .caps {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+  }
+
+  .caps li {
+    display: grid;
+    gap: 0.5rem;
+    padding: 1.5rem;
+    background: var(--surface-0);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    align-content: start;
+  }
+
+  .caps__icon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-bottom: 0.35rem;
+    border-radius: 11px;
+    background: var(--surface-1);
+    color: var(--navy-800);
+  }
+
+  .caps h3 {
+    font-size: var(--step-1);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .caps p {
+    font-size: 0.86rem;
+    line-height: 1.65;
+    color: var(--ink-500);
+  }
+
+  @media (min-width: 700px) {
+    .services-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .caps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .services-grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    .services-grid > :global(*:nth-child(1)),
+    .services-grid > :global(*:nth-child(2)),
+    .services-grid > :global(*:nth-child(3)) {
+      grid-column: span 2;
+    }
+
+    .services-grid > :global(*:nth-child(4)),
+    .services-grid > :global(*:nth-child(5)) {
+      grid-column: span 3;
+    }
+
+    .caps {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

@@ -1,0 +1,237 @@
+---
+import Icon from './ui/Icon.astro';
+import { getService } from '../data/services';
+import type { Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const serviceLabels = project.services
+  .map((slug) => getService(slug)?.shortTitle)
+  .filter(Boolean)
+  .slice(0, 2);
+---
+
+<article class="proj">
+  <div class="proj__media">
+    {
+      project.image ? (
+        <img
+          src={project.image}
+          alt={project.imageAlt ?? project.title}
+          width="800"
+          height="500"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <div class="proj__placeholder" aria-hidden="true">
+          <Icon name="shield" size={40} />
+        </div>
+      )
+    }
+    <span class="proj__sector">{project.sector}</span>
+  </div>
+
+  <div class="proj__body">
+    <p class="proj__meta">
+      <Icon name="map-pin" size={13} />
+      {project.city}
+      <span aria-hidden="true">·</span>
+      {project.year}
+    </p>
+
+    <h3 class="proj__title">{project.title}</h3>
+    <p class="proj__summary">{project.summary}</p>
+
+    <ul class="proj__results">
+      {
+        project.results.map((result) => (
+          <li>
+            <strong>{result.value}</strong>
+            <span>{result.label}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="proj__footer">
+      <ul class="proj__tags">
+        {serviceLabels.map((label) => <li>{label}</li>)}
+      </ul>
+      <a href="/contacto/" class="link-arrow">
+        Proyecto similar
+        <Icon name="arrow-right" size={14} />
+      </a>
+    </div>
+  </div>
+</article>
+
+<style>
+  .proj {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--surface-0);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition:
+      transform var(--dur) var(--ease-out),
+      box-shadow var(--dur) var(--ease-out),
+      border-color var(--dur) var(--ease-out);
+  }
+
+  .proj:hover {
+    transform: translateY(-4px);
+    border-color: rgba(61, 187, 200, 0.5);
+    box-shadow: var(--shadow-md);
+  }
+
+  .proj__media {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--navy-900);
+  }
+
+  .proj__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 600ms var(--ease-out);
+  }
+
+  .proj:hover .proj__media img {
+    transform: scale(1.05);
+  }
+
+  .proj__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(4, 20, 31, 0.05) 40%, rgba(4, 20, 31, 0.55) 100%);
+    pointer-events: none;
+  }
+
+  .proj__sector {
+    position: absolute;
+    top: 0.85rem;
+    left: 0.85rem;
+    z-index: 1;
+    padding: 0.35rem 0.65rem;
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--navy-950);
+    background: var(--cyan-300);
+    border-radius: 3px;
+  }
+
+  .proj__placeholder {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    color: rgba(41, 226, 249, 0.4);
+    background: radial-gradient(circle at 50% 40%, rgba(41, 226, 249, 0.15), transparent 65%),
+      var(--navy-900);
+  }
+
+  .proj__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    flex: 1;
+    padding: 1.35rem;
+  }
+
+  .proj__meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-500);
+  }
+
+  .proj__meta svg {
+    color: var(--teal-400);
+  }
+
+  .proj__title {
+    font-size: var(--step-1);
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+  }
+
+  .proj__summary {
+    font-size: 0.85rem;
+    line-height: 1.65;
+    color: var(--ink-500);
+  }
+
+  .proj__results {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
+    padding: 0.9rem 0;
+    margin-top: 0.2rem;
+    border-block: 1px solid var(--line);
+  }
+
+  .proj__results li {
+    display: grid;
+    gap: 0.1rem;
+    align-content: start;
+  }
+
+  .proj__results li + li {
+    padding-left: 0.6rem;
+    border-left: 1px solid var(--line);
+  }
+
+  .proj__results strong {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--navy-800);
+  }
+
+  .proj__results span {
+    font-size: 0.58rem;
+    letter-spacing: 0.04em;
+    line-height: 1.35;
+    text-transform: uppercase;
+    color: var(--ink-500);
+  }
+
+  .proj__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: auto;
+    padding-top: 0.5rem;
+  }
+
+  .proj__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .proj__tags li {
+    font-size: 0.64rem;
+    padding: 0.2rem 0.5rem;
+    color: var(--blue-500);
+    background: var(--surface-1);
+    border-radius: var(--radius-xs);
+  }
+</style>

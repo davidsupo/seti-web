@@ -1,0 +1,308 @@
+---
+import Section from '../ui/Section.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+import { differentiators } from '../../data/benefits';
+import { cityCountLabel } from '../../data/cities';
+---
+
+<Section id="nosotros" class="about">
+  <div class="container about__grid">
+    <div class="about__body" data-reveal>
+      <SectionHeading
+        eyebrow="Quiénes somos"
+        title="Ingeniería aplicada a la protección"
+        highlight="protección"
+        level="h2"
+      />
+
+      <p class="about__lead">
+        Somos una empresa especializada en el desarrollo e implementación de soluciones
+        integrales de seguridad electrónica, orientadas a proteger personas, bienes y
+        operaciones.
+      </p>
+
+      <p class="about__text">
+        Ofrecemos servicios que abarcan desde la instalación hasta el mantenimiento de
+        sistemas tecnológicos avanzados. Contamos con un equipo altamente calificado y
+        comprometido, que trabaja bajo estándares de calidad y con tecnologías de última
+        generación para ofrecer soluciones modernas y efectivas.
+      </p>
+
+      <div class="about__cta">
+        <Button href="/proyectos/" variant="outline" icon="arrow-up-right">Ver proyectos</Button>
+        <a href="/contacto/" class="link-arrow">
+          Hablar con un ingeniero
+          <Icon name="arrow-right" size={15} />
+        </a>
+      </div>
+    </div>
+
+    <div class="about__media" data-reveal style="--reveal-delay:120ms">
+      <div class="about__frame">
+        <img
+          src="/images/tecnico-instalacion.webp"
+          alt="Técnico de SETI Technology instalando una cámara de videovigilancia"
+          width="1024"
+          height="1024"
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+
+      <div class="about__badge about__badge--hq">
+        <span class="about__badge-icon"><Icon name="map-pin" size={16} /></span>
+        <span>
+          <small>Sede principal</small>
+          <strong>Trujillo, Perú</strong>
+        </span>
+      </div>
+
+      <div class="about__badge about__badge--count">
+        <strong class="about__badge-value">{cityCountLabel}</strong>
+        <small>puntos operativos<br />a nivel nacional</small>
+      </div>
+
+      <span class="about__corner about__corner--tl" aria-hidden="true"></span>
+      <span class="about__corner about__corner--br" aria-hidden="true"></span>
+    </div>
+  </div>
+
+  <div class="container">
+    <ul class="about__pillars">
+      {
+        differentiators.map((item, index) => (
+          <li data-reveal style={`--reveal-delay:${index * 90}ms`}>
+            <span class="about__pillar-num">{String(index + 1).padStart(2, '0')}</span>
+            <h3 class="about__pillar-title">{item.title}</h3>
+            <p class="about__pillar-desc">{item.description}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Section>
+
+<style>
+  .about__grid {
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 4.5rem);
+    align-items: center;
+  }
+
+  .about__body {
+    display: grid;
+    gap: 1.35rem;
+    max-width: 34rem;
+  }
+
+  .about__lead {
+    font-size: var(--step-1);
+    line-height: 1.6;
+    color: var(--ink-700);
+  }
+
+  .about__text {
+    color: var(--ink-500);
+    font-size: var(--step-0);
+  }
+
+  .about__cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+  }
+
+  /* ---------- Media ---------- */
+  .about__media {
+    position: relative;
+    justify-self: center;
+    width: 100%;
+    max-width: 460px;
+  }
+
+  .about__frame {
+    position: relative;
+    border-radius: calc(var(--radius-lg) + 6px);
+    overflow: hidden;
+    background: var(--navy-800);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .about__frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid rgba(0, 61, 96, 0.12);
+    pointer-events: none;
+  }
+
+  .about__frame img {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+  }
+
+  .about__badge {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.85rem 1.05rem;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+  }
+
+  .about__badge small {
+    display: block;
+    font-size: 0.64rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-500);
+    line-height: 1.4;
+  }
+
+  .about__badge strong {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--navy-800);
+    line-height: 1.2;
+  }
+
+  .about__badge--hq {
+    left: -1rem;
+    bottom: 1.75rem;
+  }
+
+  .about__badge-icon {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: var(--surface-2);
+    color: var(--blue-500);
+  }
+
+  .about__badge--count {
+    top: -1.25rem;
+    right: -1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15rem;
+    padding: 0.9rem 1.1rem;
+    background: linear-gradient(150deg, var(--navy-800), var(--navy-900));
+    border-color: rgba(41, 226, 249, 0.35);
+    color: #fff;
+  }
+
+  .about__badge-value {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--cyan-300);
+  }
+
+  .about__badge--count small {
+    color: rgba(255, 255, 255, 0.62);
+    letter-spacing: 0.08em;
+    font-size: 0.6rem;
+  }
+
+  .about__corner {
+    position: absolute;
+    width: 46px;
+    height: 46px;
+    border: 2px solid var(--teal-400);
+    pointer-events: none;
+  }
+
+  .about__corner--tl {
+    top: -14px;
+    left: -14px;
+    border-right: 0;
+    border-bottom: 0;
+    border-radius: 6px 0 0 0;
+  }
+
+  .about__corner--br {
+    bottom: -14px;
+    right: -14px;
+    border-left: 0;
+    border-top: 0;
+    border-radius: 0 0 6px 0;
+  }
+
+  /* ---------- Pilares ---------- */
+  .about__pillars {
+    display: grid;
+    gap: 1px;
+    margin-top: clamp(3rem, 6vw, 5rem);
+    background: var(--line);
+    border-block: 1px solid var(--line);
+    grid-template-columns: 1fr;
+  }
+
+  .about__pillars li {
+    display: grid;
+    gap: 0.5rem;
+    padding: 1.75rem 1.5rem;
+    background: var(--surface-0);
+    align-content: start;
+  }
+
+  .about__pillar-num {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--teal-400);
+  }
+
+  .about__pillar-title {
+    font-size: var(--step-1);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .about__pillar-desc {
+    font-size: 0.88rem;
+    line-height: 1.65;
+    color: var(--ink-500);
+  }
+
+  @media (max-width: 420px) {
+    .about__badge--hq {
+      left: 0;
+    }
+
+    .about__badge--count {
+      right: 0;
+    }
+  }
+
+  @media (min-width: 760px) {
+    .about__pillars {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .about__pillars li + li {
+      border-left: 1px solid var(--line);
+    }
+  }
+
+  @media (min-width: 980px) {
+    .about__grid {
+      grid-template-columns: 1.05fr 0.95fr;
+    }
+  }
+</style>

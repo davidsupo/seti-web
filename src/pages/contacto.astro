@@ -1,0 +1,581 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/ui/Section.astro';
+import Icon from '../components/ui/Icon.astro';
+import Cta from '../components/sections/Cta.astro';
+import { site, whatsappLink } from '../data/site';
+import { cities } from '../data/cities';
+import { services } from '../data/services';
+import { breadcrumbSchema, organizationSchema } from '../lib/schema';
+
+const title = 'Contacto';
+const description =
+  'Coordina una visita técnica con SETI Technology: seguridad electrónica en Trujillo, Piura, Chiclayo, Jaén, Chimbote, Lima y Arequipa.';
+
+const channels = [
+  {
+    icon: 'phone',
+    label: 'Teléfono',
+    value: site.phone.label,
+    href: site.phone.href,
+    note: site.hours,
+  },
+  {
+    icon: 'whatsapp',
+    label: 'WhatsApp',
+    value: 'Escríbenos directo',
+    href: whatsappLink(),
+    note: 'Respuesta en horario de oficina',
+    external: true,
+  },
+  {
+    icon: 'mail',
+    label: 'Correo',
+    value: site.email.label.toLowerCase(),
+    href: site.email.href,
+    note: 'Cotizaciones y consultas técnicas',
+  },
+  {
+    icon: 'instagram',
+    label: 'Instagram',
+    value: site.social.instagram.label,
+    href: site.social.instagram.href,
+    note: 'Proyectos y novedades',
+    external: true,
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  jsonLd={[
+    organizationSchema,
+    breadcrumbSchema([
+      { label: 'Inicio', href: '/' },
+      { label: 'Contacto' },
+    ]),
+  ]}
+>
+  <PageHero
+    eyebrow="Contacto"
+    title="Coordinemos la visita técnica"
+    highlight="visita técnica"
+    description="Cuéntanos qué necesitas proteger. Te respondemos con una propuesta clara: alcance, equipos y cronograma."
+    breadcrumb={[{ label: 'Contacto', href: '/contacto/' }]}
+  />
+
+  <Section>
+    <div class="container contact">
+      <div class="contact__info">
+        <h2 class="contact__title">Canales directos</h2>
+        <ul class="channels">
+          {
+            channels.map((channel) => (
+              <li>
+                <a
+                  href={channel.href}
+                  target={channel.external ? '_blank' : undefined}
+                  rel={channel.external ? 'noopener noreferrer' : undefined}
+                  class="channel"
+                >
+                  <span class="channel__icon"><Icon name={channel.icon as any} size={18} /></span>
+                  <span class="channel__body">
+                    <span class="channel__label">{channel.label}</span>
+                    <span class="channel__value">{channel.value}</span>
+                    <span class="channel__note">{channel.note}</span>
+                  </span>
+                  <Icon name="arrow-up-right" size={15} class="channel__arrow" />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+
+        <div class="office">
+          <p class="office__label">Sede principal</p>
+          <p class="office__city">{site.headquarters.label}</p>
+          <p class="office__note">
+            Puntos operativos en {cities.length} ciudades. Revisa la
+            <a href="/cobertura/">cobertura completa</a>.
+          </p>
+          <div class="office__hours">
+            <Icon name="clock" size={15} />
+            {site.hours} · {site.support}
+          </div>
+        </div>
+      </div>
+
+      <div class="contact__form-wrap">
+        <form id="contact-form" class="contact-form" novalidate>
+          <div class="contact-form__head">
+            <p class="eyebrow">Formulario</p>
+            <h2 class="contact-form__title">Cuéntanos sobre tu proyecto</h2>
+            <p class="contact-form__note">
+              Al enviar, se abrirá tu correo o WhatsApp con los datos ya redactados. No
+              almacenamos la información en este sitio.
+            </p>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="name">Nombre y apellido <span>*</span></label>
+              <input id="name" name="name" type="text" autocomplete="name" required placeholder="Ej. Ana Torres" />
+            </div>
+            <div class="field">
+              <label for="company">Empresa</label>
+              <input id="company" name="company" type="text" autocomplete="organization" placeholder="Razón social" />
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="email">Correo <span>*</span></label>
+              <input id="email" name="email" type="email" autocomplete="email" required placeholder="nombre@empresa.com" />
+            </div>
+            <div class="field">
+              <label for="phone">Teléfono</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="999 999 999" />
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="city">Ciudad</label>
+              <select id="city" name="city">
+                <option value="">Selecciona una ciudad</option>
+                {cities.map((city) => <option value={`${city.name} (${city.region})`}>{city.name}</option>)}
+                <option value="Otra ciudad">Otra ciudad</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="service">Servicio de interés</label>
+              <select id="service" name="service">
+                <option value="">Selecciona un servicio</option>
+                {services.map((service) => <option value={service.title}>{service.shortTitle}</option>)}
+                <option value="Varios servicios">Varios servicios</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="message">Mensaje <span>*</span></label>
+            <textarea
+              id="message"
+              name="message"
+              rows="4"
+              required
+              placeholder="Cuéntanos qué quieres proteger, el tipo de instalación y el plazo estimado."
+            ></textarea>
+          </div>
+
+          <label class="consent">
+            <input type="checkbox" id="consent" name="consent" required />
+            <span>
+              Autorizo que SETI Technology me contacte para responder esta solicitud.
+              Consulta la <a href="/privacidad/">política de privacidad</a>.
+            </span>
+          </label>
+
+          <div class="contact-form__actions">
+            <button type="submit" class="submit">Enviar por correo</button>
+            <button type="button" class="submit submit--wa" data-channel="whatsapp">
+              <Icon name="whatsapp" size={16} />
+              Enviar por WhatsApp
+            </button>
+          </div>
+
+          <p class="contact-form__feedback" id="form-feedback" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </Section>
+
+  <Cta />
+</BaseLayout>
+
+<script define:vars={{ contactEmail: site.email.label, contactWhatsapp: site.phone.whatsapp }}>
+  const form = document.getElementById('contact-form');
+  const feedback = document.getElementById('form-feedback');
+
+  const readForm = () => {
+    const data = new FormData(form);
+    const get = (key) => (data.get(key) || '').toString().trim();
+    return {
+      name: get('name'),
+      company: get('company'),
+      email: get('email'),
+      phone: get('phone'),
+      city: get('city'),
+      service: get('service'),
+      message: get('message'),
+    };
+  };
+
+  const buildText = (values) =>
+    [
+      `Nombre: ${values.name}`,
+      values.company ? `Empresa: ${values.company}` : null,
+      `Correo: ${values.email}`,
+      values.phone ? `Teléfono: ${values.phone}` : null,
+      values.city ? `Ciudad: ${values.city}` : null,
+      values.service ? `Servicio: ${values.service}` : null,
+      '',
+      values.message,
+    ]
+      .filter(Boolean)
+      .join('\n');
+
+  const validate = () => {
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      if (feedback) {
+        feedback.textContent = 'Revisa los campos obligatorios marcados con *.';
+        feedback.dataset.state = 'error';
+      }
+      return false;
+    }
+    return true;
+  };
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!validate()) return;
+
+    const values = readForm();
+    const subject = `Solicitud de cotización — ${values.service || 'Seguridad electrónica'}`;
+    const body = buildText(values);
+    window.location.href = `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+    if (feedback) {
+      feedback.textContent =
+        'Abrimos tu cliente de correo con el mensaje listo. Si no se abrió, escríbenos a ' +
+        contactEmail.toLowerCase() +
+        '.';
+      feedback.dataset.state = 'ok';
+    }
+  });
+
+  form?.querySelector('[data-channel="whatsapp"]')?.addEventListener('click', () => {
+    if (!validate()) return;
+
+    const values = readForm();
+    const text = `Hola SETI Technology, quiero cotizar un proyecto.\n\n${buildText(values)}`;
+    window.open(`https://wa.me/${contactWhatsapp}?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+
+    if (feedback) {
+      feedback.textContent = 'Abrimos WhatsApp con tu mensaje redactado.';
+      feedback.dataset.state = 'ok';
+    }
+  });
+</script>
+
+<style>
+  .contact {
+    display: grid;
+    gap: clamp(2rem, 4vw, 3.5rem);
+    align-items: start;
+  }
+
+  .contact__title {
+    font-size: var(--step-2);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    margin-bottom: 1.25rem;
+  }
+
+  .channels {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .channel {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: var(--surface-0);
+    transition:
+      border-color var(--dur) var(--ease-out),
+      transform var(--dur) var(--ease-out),
+      background var(--dur) var(--ease-out);
+  }
+
+  .channel:hover {
+    border-color: rgba(61, 187, 200, 0.55);
+    background: var(--surface-1);
+    transform: translateX(3px);
+  }
+
+  .channel__icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--navy-800);
+    color: var(--cyan-300);
+  }
+
+  .channel__body {
+    display: grid;
+    gap: 0.05rem;
+    min-width: 0;
+  }
+
+  .channel__label {
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-500);
+  }
+
+  .channel__value {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--ink-900);
+    line-height: 1.35;
+    word-break: break-word;
+  }
+
+  .channel__note {
+    font-size: 0.72rem;
+    color: var(--ink-500);
+  }
+
+  .channel__arrow {
+    margin-left: auto;
+    flex: none;
+    color: var(--ink-300);
+  }
+
+  .office {
+    margin-top: 1.25rem;
+    padding: 1.35rem;
+    border-radius: var(--radius-md);
+    background:
+      radial-gradient(120% 120% at 100% 0%, rgba(41, 226, 249, 0.16), transparent 60%),
+      var(--navy-900);
+    color: #fff;
+  }
+
+  .office__label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cyan-300);
+  }
+
+  .office__city {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin-top: 0.15rem;
+  }
+
+  .office__note {
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 0.4rem;
+  }
+
+  .office__note a {
+    color: var(--cyan-300);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .office__hours {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: 0.85rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.74rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  /* ---------- Formulario ---------- */
+  .contact__form-wrap {
+    padding: clamp(1.35rem, 3vw, 2.25rem);
+    background: var(--surface-1);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+  }
+
+  .contact-form {
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  .contact-form__head {
+    display: grid;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .contact-form__title {
+    font-size: var(--step-2);
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+  }
+
+  .contact-form__note {
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--ink-500);
+  }
+
+  .field-row {
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  .field {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .field label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-700);
+  }
+
+  .field label span {
+    color: var(--teal-400);
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    font-size: 0.88rem;
+    color: var(--ink-900);
+    background: var(--surface-0);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    transition:
+      border-color var(--dur) var(--ease-out),
+      box-shadow var(--dur) var(--ease-out);
+  }
+
+  .field textarea {
+    resize: vertical;
+    min-height: 110px;
+  }
+
+  .field input::placeholder,
+  .field textarea::placeholder {
+    color: var(--ink-300);
+  }
+
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    outline: none;
+    border-color: var(--teal-400);
+    box-shadow: 0 0 0 3px rgba(61, 187, 200, 0.18);
+  }
+
+  .consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.76rem;
+    line-height: 1.55;
+    color: var(--ink-500);
+  }
+
+  .consent input {
+    margin-top: 0.2rem;
+    accent-color: var(--teal-400);
+    width: 15px;
+    height: 15px;
+    flex: none;
+  }
+
+  .consent a {
+    color: var(--blue-500);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .contact-form__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0.85rem 1.4rem;
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--navy-950);
+    background: linear-gradient(100deg, var(--cyan-300), var(--teal-400));
+    border-radius: var(--radius-pill);
+    transition:
+      transform var(--dur) var(--ease-out),
+      box-shadow var(--dur) var(--ease-out);
+  }
+
+  .submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 28px -14px rgba(41, 226, 249, 0.9);
+  }
+
+  .submit--wa {
+    color: var(--navy-800);
+    background: transparent;
+    border: 1px solid var(--line-strong);
+  }
+
+  .submit--wa:hover {
+    border-color: var(--teal-400);
+    background: var(--surface-0);
+    box-shadow: none;
+  }
+
+  .contact-form__feedback {
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: var(--ink-500);
+  }
+
+  .contact-form__feedback[data-state='ok'] {
+    color: var(--blue-500);
+  }
+
+  .contact-form__feedback[data-state='error'] {
+    color: #b4472f;
+  }
+
+  @media (min-width: 560px) {
+    .field-row {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .contact {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    }
+  }
+</style>

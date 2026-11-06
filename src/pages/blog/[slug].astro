@@ -1,0 +1,466 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Section from '../../components/ui/Section.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import Cta from '../../components/sections/Cta.astro';
+import Icon from '../../components/ui/Icon.astro';
+import { formatDate, readingTime } from '../../lib/format';
+import { breadcrumbSchema, organizationSchema } from '../../lib/schema';
+import { site } from '../../data/site';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const { title, description, pubDate, updatedDate, author, tags, cover, coverAlt, icon } = post.data;
+const minutes = readingTime(post.body);
+const canonical = new URL(`/blog/${post.id}/`, site.url).href;
+
+const toc = headings.filter((heading) => heading.depth === 2);
+const related = (await getCollection('blog', ({ data, id }) => !data.draft && id !== post.id))
+  .sort((a, b) => {
+    const scoreA = a.data.tags.filter((tag) => tags.includes(tag)).length;
+    const scoreB = b.data.tags.filter((tag) => tags.includes(tag)).length;
+    return scoreB - scoreA || b.data.pubDate.getTime() - a.data.pubDate.getTime();
+  })
+  .slice(0, 2);
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title,
+  description,
+  datePublished: pubDate.toISOString(),
+  dateModified: (updatedDate ?? pubDate).toISOString(),
+  author: { '@type': 'Organization', name: author },
+  publisher: { '@id': `${site.url}/#organization` },
+  mainEntityOfPage: canonical,
+  image: `${site.url}/og-default.png`,
+  articleSection: tags[0],
+  keywords: tags.join(', '),
+  inLanguage: 'es-PE',
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  type="article"
+  jsonLd={[
+    organizationSchema,
+    articleSchema,
+    breadcrumbSchema([
+      { label: 'Inicio', href: '/' },
+      { label: 'Blog', href: '/blog/' },
+      { label: title, href: `/blog/${post.id}/` },
+    ]),
+  ]}
+>
+  <header class="post-hero">
+    <div class="post-hero__bg" aria-hidden="true"></div>
+    <div class="container post-hero__inner">
+      <nav class="crumbs" aria-label="Ruta de navegación">
+        <a href="/">Inicio</a>
+        <Icon name="chevron-down" size={10} />
+        <a href="/blog/">Blog</a>
+        <Icon name="chevron-down" size={10} />
+        <span aria-current="page">{tags[0] ?? 'Artículo'}</span>
+      </nav>
+
+      {tags.length > 0 && (
+        <ul class="post-hero__tags">
+          {tags.map((tag) => <li>{tag}</li>)}
+        </ul>
+      )}
+
+      <h1 class="post-hero__title">{title}</h1>
+      <p class="post-hero__desc">{description}</p>
+
+      <div class="post-hero__meta">
+        <span class="post-hero__author">
+          <span class="post-hero__avatar" aria-hidden="true">
+            <Icon name="sparkles" size={14} />
+          </span>
+          {author}
+        </span>
+        <span aria-hidden="true">·</span>
+        <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+        <span aria-hidden="true">·</span>
+        <span>{minutes} min de lectura</span>
+        {updatedDate && (
+          <>
+            <span aria-hidden="true">·</span>
+            <span>Actualizado el {formatDate(updatedDate)}</span>
+          </>
+        )}
+      </div>
+    </div>
+  </header>
+
+  <Section>
+    <div class="container post">
+      <article class="post__article">
+        {
+          cover && (
+            <img
+              src={cover}
+              alt={coverAlt ?? title}
+              class="post__cover"
+              width="1200"
+              height="630"
+              loading="eager"
+              decoding="async"
+            />
+          )
+        }
+
+        <div class="post__body prose">
+          <Content />
+        </div>
+
+        <footer class="post__footer">
+          <div class="post__share">
+            <p class="post__share-label">Compartir</p>
+            <a
+              href={`https://wa.me/?text=${encodeURIComponent(`${title} ${canonical}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Icon name="whatsapp" size={16} />
+              WhatsApp
+            </a>
+            <a
+              href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonical)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Icon name="globe" size={16} />
+              LinkedIn
+            </a>
+            <a href={site.email.href}>
+              <Icon name="mail" size={16} />
+              Correo
+            </a>
+          </div>
+
+          <a href="/blog/" class="post__back">
+            <Icon name="arrow-right" size={14} />
+            Volver al blog
+          </a>
+        </footer>
+      </article>
+
+      {
+        toc.length >= 2 && (
+          <aside class="post__toc">
+            <p class="post__toc-label">En este artículo</p>
+            <ol>
+              {toc.map((heading) => (
+                <li>
+                  <a href={`#${heading.slug}`}>{heading.text}</a>
+                </li>
+              ))}
+            </ol>
+          </aside>
+        )
+      }
+    </div>
+  </Section>
+
+  {
+    related.length > 0 && (
+      <Section tone="mist">
+        <div class="container">
+          <div class="related-head">
+            <p class="eyebrow">Seguir leyendo</p>
+            <a href="/blog/" class="link-arrow">
+              Todo el blog
+              <Icon name="arrow-right" size={14} />
+            </a>
+          </div>
+          <div class="related-grid">
+            {related.map((item) => (
+              <BlogCard post={item} />
+            ))}
+          </div>
+        </div>
+      </Section>
+    )
+  }
+
+  <Cta />
+</BaseLayout>
+
+<style>
+  /* ---------- Cabecera ---------- */
+  .post-hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(2.5rem, 5vw, 4rem);
+    background:
+      radial-gradient(80% 120% at 85% 0%, rgba(29, 79, 116, 0.5) 0%, transparent 55%),
+      linear-gradient(165deg, #082239 0%, #0b2748 60%, #071b2d 100%);
+    color: #fff;
+  }
+
+  .post-hero__bg {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(41, 226, 249, 0.18) 1px, transparent 1px);
+    background-size: 30px 30px;
+    mask-image: radial-gradient(ellipse 60% 80% at 80% 0%, #000, transparent 70%);
+    opacity: 0.5;
+  }
+
+  .post-hero__inner {
+    position: relative;
+    display: grid;
+    gap: 1rem;
+    max-width: 54rem;
+  }
+
+  .crumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .crumbs svg {
+    transform: rotate(-90deg);
+    opacity: 0.6;
+  }
+
+  .crumbs a:hover {
+    color: var(--cyan-300);
+  }
+
+  .post-hero__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+  }
+
+  .post-hero__tags li {
+    padding: 0.3rem 0.65rem;
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cyan-300);
+    border: 1px solid rgba(41, 226, 249, 0.35);
+    border-radius: var(--radius-pill);
+  }
+
+  .post-hero__title {
+    font-size: clamp(2rem, 4.6vw, 3.4rem);
+    line-height: 0.98;
+    color: #fff;
+    max-width: 26ch;
+  }
+
+  .post-hero__desc {
+    font-size: var(--step-1);
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.68);
+    max-width: 56ch;
+  }
+
+  .post-hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    font-size: 0.76rem;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .post-hero__author {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: rgba(255, 255, 255, 0.78);
+  }
+
+  .post-hero__avatar {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(41, 226, 249, 0.14);
+    color: var(--cyan-300);
+  }
+
+  /* ---------- Artículo ---------- */
+  .post {
+    display: grid;
+    gap: clamp(2rem, 4vw, 3.5rem);
+    align-items: start;
+  }
+
+  .post__article {
+    min-width: 0;
+    max-width: 72ch;
+  }
+
+  .post__cover {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-md);
+  }
+
+  .post__body {
+    font-size: 1.02rem;
+  }
+
+  .post__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .post__share {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .post__share-label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-500);
+    margin-right: 0.25rem;
+  }
+
+  .post__share a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.72rem;
+    color: var(--ink-700);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    transition:
+      border-color var(--dur) var(--ease-out),
+      color var(--dur) var(--ease-out);
+  }
+
+  .post__share a:hover {
+    border-color: var(--teal-400);
+    color: var(--blue-500);
+  }
+
+  .post__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--blue-500);
+  }
+
+  .post__back svg {
+    transform: rotate(180deg);
+  }
+
+  /* ---------- Índice ---------- */
+  .post__toc {
+    display: none;
+    padding: 1.25rem;
+    background: var(--surface-1);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+  }
+
+  .post__toc-label {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--teal-400);
+    margin-bottom: 0.85rem;
+  }
+
+  .post__toc ol {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .post__toc a {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: var(--ink-500);
+    transition: color var(--dur) var(--ease-out);
+  }
+
+  .post__toc a span {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--ink-300);
+    padding-top: 0.15rem;
+  }
+
+  .post__toc a:hover {
+    color: var(--blue-500);
+  }
+
+  /* ---------- Relacionados ---------- */
+  .related-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .related-grid {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 760px) {
+    .related-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .post {
+      grid-template-columns: minmax(0, 1fr) 260px;
+    }
+
+    .post__toc {
+      display: block;
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+    }
+  }
+</style>

@@ -1,0 +1,65 @@
+---
+import Section from '../ui/Section.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import Button from '../ui/Button.astro';
+import ProjectCard from '../ProjectCard.astro';
+import { projects } from '../../data/projects';
+
+const featured = projects.filter((project) => project.featured).slice(0, 3);
+---
+
+<Section id="proyectos">
+  <div class="container">
+    <div class="proj-head">
+      <SectionHeading
+        eyebrow="Proyectos"
+        title="Sistemas en operación, no maquetas"
+        highlight="en operación"
+        description="Una muestra de los escenarios que resolvemos: industria, retail, educación, minería y corporativo."
+      />
+      <Button href="/proyectos/" variant="outline" icon="arrow-up-right">Ver todos</Button>
+    </div>
+
+    <div class="proj-grid">
+      {
+        featured.map((project, index) => (
+          <div data-reveal style={`--reveal-delay:${index * 100}ms`}>
+            <ProjectCard project={project} />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</Section>
+
+<style>
+  .proj-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  .proj-grid {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .proj-grid > :global(*) {
+    min-width: 0;
+  }
+
+  @media (min-width: 720px) {
+    .proj-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .proj-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

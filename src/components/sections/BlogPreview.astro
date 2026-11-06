@@ -1,0 +1,67 @@
+---
+import { getCollection } from 'astro:content';
+import Section from '../ui/Section.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import Button from '../ui/Button.astro';
+import BlogCard from '../BlogCard.astro';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .slice(0, 3);
+---
+
+{
+  posts.length > 0 && (
+    <Section id="blog" tone="mist">
+      <div class="container">
+        <div class="blog-head">
+          <SectionHeading
+            eyebrow="Blog"
+            title="Notas de campo sobre seguridad electrónica"
+            highlight="seguridad electrónica"
+            description="Criterios técnicos, normativa y decisiones de proyecto contadas por quien las ejecuta. Publicamos una nota nueva cada semana."
+          />
+          <Button href="/blog/" variant="outline" icon="arrow-up-right">
+            Ver todas las publicaciones
+          </Button>
+        </div>
+
+        <div class="blog-grid">
+          {posts.map((post, index) => (
+            <div data-reveal style={`--reveal-delay:${index * 90}ms`}>
+              <BlogCard post={post} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </Section>
+  )
+}
+
+<style>
+  .blog-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  .blog-grid {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 720px) {
+    .blog-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .blog-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

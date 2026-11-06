@@ -1,0 +1,138 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/ui/Icon.astro';
+import Button from '../components/ui/Button.astro';
+import { services } from '../data/services';
+---
+
+<BaseLayout title="Página no encontrada" description="La página que buscas no existe o cambió de dirección." noindex>
+  <section class="notfound">
+    <div class="notfound__bg" aria-hidden="true"></div>
+    <div class="container notfound__inner">
+      <p class="notfound__code">404</p>
+      <h1 class="notfound__title">Señal perdida</h1>
+      <p class="notfound__text">
+        La página que buscas no existe o cambió de dirección. Como en un sistema de
+        seguridad, revisemos el perímetro.
+      </p>
+
+      <div class="notfound__actions">
+        <Button href="/" size="lg">Volver al inicio</Button>
+        <Button href="/contacto/" variant="secondary" size="lg" icon="arrow-right">
+          Contactar a un especialista
+        </Button>
+      </div>
+
+      <ul class="notfound__links">
+        {
+          services.map((service) => (
+            <li>
+              <a href={`/servicios/${service.slug}/`}>
+                <Icon name={service.icon as any} size={16} />
+                {service.shortTitle}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .notfound {
+    position: relative;
+    overflow: hidden;
+    min-height: 72vh;
+    display: grid;
+    place-items: center;
+    padding-block: clamp(3rem, 8vw, 6rem);
+    background:
+      radial-gradient(70% 90% at 50% 0%, rgba(29, 79, 116, 0.5) 0%, transparent 60%),
+      linear-gradient(180deg, #0b2748 0%, #04141f 100%);
+    color: #fff;
+    text-align: center;
+  }
+
+  .notfound__bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(41, 226, 249, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(41, 226, 249, 0.06) 1px, transparent 1px);
+    background-size: 70px 70px;
+    mask-image: radial-gradient(circle at 50% 40%, #000, transparent 70%);
+  }
+
+  .notfound__inner {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: 1rem;
+    max-width: 52rem;
+  }
+
+  .notfound__code {
+    font-family: var(--font-display);
+    font-size: clamp(5rem, 16vw, 11rem);
+    font-weight: 700;
+    line-height: 0.8;
+    color: transparent;
+    -webkit-text-stroke: 2px var(--cyan-300);
+    opacity: 0.55;
+  }
+
+  .notfound__title {
+    font-size: clamp(1.9rem, 4.5vw, 3rem);
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .notfound__text {
+    max-width: 46ch;
+    font-size: var(--step-0);
+    line-height: 1.7;
+    color: var(--on-dark-muted);
+  }
+
+  .notfound__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .notfound__links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .notfound__links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.8rem;
+    font-size: 0.74rem;
+    color: rgba(255, 255, 255, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-pill);
+    transition:
+      color var(--dur) var(--ease-out),
+      border-color var(--dur) var(--ease-out);
+  }
+
+  .notfound__links a:hover {
+    color: #fff;
+    border-color: rgba(41, 226, 249, 0.5);
+  }
+
+  .notfound__links svg {
+    color: var(--teal-400);
+  }
+</style>

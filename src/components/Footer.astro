@@ -1,0 +1,269 @@
+---
+import { site, whatsappLink } from '../data/site';
+import { services } from '../data/services';
+import { cityCount } from '../data/cities';
+import Icon from './ui/Icon.astro';
+import Logo from './ui/Logo.astro';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="footer__glow" aria-hidden="true"></div>
+
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <Logo variant="light" height={42} />
+      <p class="footer__tagline">
+        Seguridad electrónica, proyectos e inteligencia artificial para proteger personas,
+        bienes y operaciones.
+      </p>
+      <div class="footer__social">
+        <a
+          href={site.social.instagram.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Instagram de SETI Technology"
+        >
+          <Icon name="instagram" size={18} />
+        </a>
+        <a
+          href={whatsappLink()}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="WhatsApp de SETI Technology"
+        >
+          <Icon name="whatsapp" size={18} />
+        </a>
+        <a href={site.email.href} aria-label="Enviar correo a SETI Technology">
+          <Icon name="mail" size={18} />
+        </a>
+      </div>
+    </div>
+
+    <nav class="footer__col" aria-label="Servicios">
+      <h2 class="footer__title">Servicios</h2>
+      <ul class="footer__list">
+        {services.map((service) => (
+          <li><a href={`/servicios/${service.slug}/`}>{service.shortTitle}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <nav class="footer__col" aria-label="Empresa">
+      <h2 class="footer__title">Empresa</h2>
+      <ul class="footer__list">
+        <li><a href="/#nosotros">Nosotros</a></li>
+        <li><a href="/proyectos/">Proyectos</a></li>
+        <li><a href="/cobertura/">Cobertura</a></li>
+        <li><a href="/blog/">Blog</a></li>
+        <li><a href="/contacto/">Contacto</a></li>
+        <li><a href="/privacidad/">Privacidad</a></li>
+      </ul>
+    </nav>
+
+    <div class="footer__col footer__col--contact">
+      <h2 class="footer__title">Contacto</h2>
+      <ul class="footer__list footer__list--contact">
+        <li>
+          <Icon name="phone" size={15} />
+          <a href={site.phone.href}>{site.phone.label}</a>
+        </li>
+        <li>
+          <Icon name="mail" size={15} />
+          <a href={site.email.href}>{site.email.label.toLowerCase()}</a>
+        </li>
+        <li>
+          <Icon name="map-pin" size={15} />
+          <span>{site.headquarters.label}</span>
+        </li>
+        <li>
+          <Icon name="clock" size={15} />
+          <span>{site.hours}</span>
+        </li>
+        <li>
+          <Icon name="globe" size={15} />
+          <span>{cityCount} ciudades con cobertura</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container footer__bottom">
+    <p>© {year} {site.name}. Todos los derechos reservados.</p>
+    <p class="footer__credit">
+      <span>Seguridad electrónica · Projects &amp; IA</span>
+      <a href="#top" class="footer__totop">
+        Volver arriba
+        <Icon name="arrow-up-right" size={13} />
+      </a>
+    </p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(90% 120% at 100% 0%, rgba(29, 79, 116, 0.35) 0%, transparent 55%),
+      linear-gradient(180deg, #04141f 0%, #061c2e 100%);
+    color: var(--on-dark-muted);
+    padding-top: clamp(3rem, 6vw, 5rem);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .footer__glow {
+    position: absolute;
+    top: -1px;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan-300), transparent);
+    opacity: 0.5;
+  }
+
+  .footer__inner {
+    display: grid;
+    gap: clamp(2rem, 4vw, 3rem);
+    padding-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .footer__brand {
+    display: grid;
+    gap: 1.25rem;
+    max-width: 34ch;
+  }
+
+  .footer__tagline {
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .footer__social {
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .footer__social a {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.7);
+    transition:
+      color var(--dur) var(--ease-out),
+      border-color var(--dur) var(--ease-out),
+      background var(--dur) var(--ease-out);
+  }
+
+  .footer__social a:hover {
+    color: var(--navy-950);
+    background: var(--cyan-300);
+    border-color: var(--cyan-300);
+  }
+
+  .footer__col {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+  }
+
+  .footer__title {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cyan-300);
+  }
+
+  .footer__list {
+    display: grid;
+    gap: 0.6rem;
+    font-size: 0.86rem;
+  }
+
+  .footer__list a {
+    color: rgba(255, 255, 255, 0.62);
+    transition: color var(--dur) var(--ease-out);
+  }
+
+  .footer__list a:hover {
+    color: #fff;
+  }
+
+  .footer__list--contact {
+    gap: 0.75rem;
+  }
+
+  .footer__list--contact li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 0.84rem;
+    line-height: 1.5;
+    word-break: break-word;
+  }
+
+  .footer__list--contact svg {
+    flex: none;
+    margin-top: 0.2rem;
+    color: var(--teal-400);
+  }
+
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 1.6rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.76rem;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .footer__credit {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .footer__totop {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: rgba(255, 255, 255, 0.6);
+    transition: color var(--dur) var(--ease-out);
+  }
+
+  .footer__totop:hover {
+    color: var(--cyan-300);
+  }
+
+  @media (min-width: 640px) {
+    .footer__inner {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .footer__brand {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .footer__inner {
+      grid-template-columns: 1.4fr 1fr 1fr 1.3fr;
+    }
+
+    .footer__brand {
+      grid-column: auto;
+    }
+  }
+</style>

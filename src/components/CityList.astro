@@ -1,0 +1,168 @@
+---
+import { cities } from '../data/cities';
+import Icon from './ui/Icon.astro';
+
+interface Props {
+  variant?: 'list' | 'cards';
+  class?: string;
+}
+
+const { variant = 'list', class: className } = Astro.props;
+---
+
+<ul class:list={['cities', `cities--${variant}`, className]}>
+  {
+    cities.map((city) => (
+      <li>
+        <a
+          href={`/cobertura/#${city.id}`}
+          class="city"
+          data-city-target={city.id}
+          data-city-name={city.name}
+        >
+          <span class="city__pin" aria-hidden="true">
+            <Icon name="map-pin" size={16} />
+          </span>
+          <span class="city__body">
+            <span class="city__name">
+              {city.name}
+              {city.role === 'hq' && <em class="city__tag">Sede</em>}
+            </span>
+            <span class="city__region">{city.region} · Perú</span>
+            {variant === 'cards' && <span class="city__summary">{city.summary}</span>}
+          </span>
+          <span class="city__meta">
+            {variant === 'cards' ? (
+              <span class="city__count">{city.services.length} servicios</span>
+            ) : (
+              <Icon name="arrow-up-right" size={14} />
+            )}
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .cities {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .city {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.02);
+    transition:
+      background var(--dur) var(--ease-out),
+      border-color var(--dur) var(--ease-out),
+      transform var(--dur) var(--ease-out);
+  }
+
+  .city:hover,
+  .city.is-active {
+    background: rgba(41, 226, 249, 0.08);
+    border-color: rgba(41, 226, 249, 0.42);
+    transform: translateX(3px);
+  }
+
+  .city__pin {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    background: rgba(41, 226, 249, 0.1);
+    color: var(--teal-400);
+  }
+
+  .city__body {
+    display: grid;
+    gap: 0.05rem;
+    min-width: 0;
+  }
+
+  .city__name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #fff;
+    line-height: 1.1;
+  }
+
+  .city__tag {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    font-style: normal;
+    letter-spacing: 0.14em;
+    padding: 0.15rem 0.4rem;
+    color: var(--navy-950);
+    background: var(--cyan-300);
+    border-radius: 3px;
+  }
+
+  .city__region {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .city__summary {
+    display: none;
+    font-size: 0.8rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.55);
+    margin-top: 0.35rem;
+  }
+
+  .city__meta {
+    margin-left: auto;
+    color: rgba(255, 255, 255, 0.35);
+    flex: none;
+  }
+
+  .city__count {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal-400);
+  }
+
+  /* ---------- Variante tarjetas ---------- */
+  .cities--cards {
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  }
+
+  .cities--cards .city {
+    height: 100%;
+    align-items: flex-start;
+    padding: 1.25rem;
+    border-radius: var(--radius-md);
+  }
+
+  .cities--cards .city__pin {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+  }
+
+  .cities--cards .city__name {
+    font-size: 1.25rem;
+  }
+
+  .cities--cards .city__summary {
+    display: block;
+  }
+</style>

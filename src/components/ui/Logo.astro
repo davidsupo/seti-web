@@ -1,0 +1,43 @@
+---
+interface Props {
+  variant?: 'light' | 'dark';
+  height?: number;
+  class?: string;
+  href?: string;
+}
+
+const { variant = 'dark', height = 38, class: className, href = '/' } = Astro.props;
+const src = variant === 'light' ? '/brand/seti-logo-light.png' : '/brand/seti-logo-dark.png';
+const width = Math.round(height * 2.527);
+---
+
+<a href={href} class:list={['logo', className]} aria-label="SETI Technology — Inicio">
+  <img
+    src={src}
+    alt="SETI Technology"
+    width={width}
+    height={height}
+    decoding="async"
+    class="logo__img"
+    style={`height:${height}px;width:${width}px`}
+  />
+</a>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    flex: none;
+    transition: opacity var(--dur) var(--ease-out);
+  }
+
+  .logo:hover {
+    opacity: 0.85;
+  }
+
+  .logo__img {
+    display: block;
+    object-fit: contain;
+    max-width: 100%;
+  }
+</style>

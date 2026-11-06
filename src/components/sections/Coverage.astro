@@ -1,0 +1,131 @@
+---
+import Section from '../ui/Section.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import CoverageMap from '../CoverageMap.astro';
+import CityList from '../CityList.astro';
+import Icon from '../ui/Icon.astro';
+import { cityCount, regions } from '../../data/cities';
+---
+
+<Section id="cobertura" tone="dark">
+  <div class="container">
+    <div class="cov__head">
+      <SectionHeading
+        eyebrow="Cobertura"
+        title="Cobertura estratégica en las principales ciudades del país"
+        highlight="principales ciudades"
+        tone="dark"
+        description={`${cityCount} puntos operativos en ${regions.length} regiones, con la misma ingeniería y los mismos estándares de instalación.`}
+      />
+      <div class="cov__note">
+        <Icon name="globe" size={18} />
+        <p>Selecciona una ciudad para ubicarla en el mapa.</p>
+      </div>
+    </div>
+
+    <div class="cov__grid">
+      <div class="cov__map" data-reveal>
+        <CoverageMap height="560px" />
+      </div>
+
+      <div class="cov__aside" data-reveal style="--reveal-delay:120ms">
+        <p class="cov__label">Puntos operativos</p>
+        <CityList variant="list" />
+        <div class="cov__footer">
+          <Icon name="sparkles" size={16} />
+          <p>
+            ¿Tu ciudad no aparece? Evaluamos proyectos en todo el Perú con brigadas de
+            instalación.
+            <a href="/contacto/">Consúltanos</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</Section>
+
+<style>
+  .cov__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  .cov__note {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.78rem;
+    color: var(--on-dark-muted);
+  }
+
+  .cov__note svg {
+    color: var(--cyan-300);
+    flex: none;
+  }
+
+  .cov__grid {
+    display: grid;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .cov__map {
+    min-width: 0;
+  }
+
+  .cov__aside {
+    display: grid;
+    gap: 1rem;
+    padding: 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .cov__label {
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--teal-400);
+  }
+
+  .cov__footer {
+    display: flex;
+    gap: 0.6rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.76rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .cov__footer svg {
+    flex: none;
+    margin-top: 0.15rem;
+    color: var(--cyan-300);
+  }
+
+  .cov__footer a {
+    color: var(--cyan-300);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  @media (min-width: 1024px) {
+    .cov__grid {
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+      gap: 1.75rem;
+    }
+
+    .cov__aside {
+      max-height: 560px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+  }
+</style>

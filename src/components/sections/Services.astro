@@ -1,0 +1,85 @@
+---
+import Section from '../ui/Section.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import Button from '../ui/Button.astro';
+import ServiceCard from '../ServiceCard.astro';
+import { services } from '../../data/services';
+---
+
+<Section id="servicios" tone="mist">
+  <div class="container">
+    <div class="svc-head">
+      <SectionHeading
+        eyebrow="Nuestros servicios"
+        title="Seguridad electrónica de punta a punta"
+        highlight="punta a punta"
+        description="Cinco líneas de servicio que se integran entre sí: detección, video, accesos y la red que sostiene todo."
+      />
+      <div class="svc-head__action">
+        <Button href="/servicios/" variant="outline" icon="arrow-up-right">Ver todos los servicios</Button>
+      </div>
+    </div>
+
+    <div class="svc-grid">
+      {
+        services.map((service, index) => (
+          <div
+            class:list={['svc-grid__item', index < 3 ? 'svc-grid__item--third' : 'svc-grid__item--half']}
+            data-reveal
+            style={`--reveal-delay:${index * 80}ms`}
+          >
+            <ServiceCard service={service} />
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</Section>
+
+<style>
+  .svc-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  .svc-head__action {
+    flex: none;
+  }
+
+  .svc-grid {
+    display: grid;
+    gap: 1.15rem;
+  }
+
+  .svc-grid__item {
+    display: flex;
+  }
+
+  .svc-grid__item > :global(*) {
+    width: 100%;
+  }
+
+  @media (min-width: 700px) {
+    .svc-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .svc-grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    .svc-grid__item--third {
+      grid-column: span 2;
+    }
+
+    .svc-grid__item--half {
+      grid-column: span 3;
+    }
+  }
+</style>

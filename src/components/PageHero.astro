@@ -1,0 +1,183 @@
+---
+import Icon from './ui/Icon.astro';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  highlight?: string;
+  description?: string;
+  breadcrumb?: { label: string; href: string }[];
+  /** Imagen decorativa a la derecha */
+  image?: string;
+  imageAlt?: string;
+}
+
+const { eyebrow, title, highlight, description, breadcrumb = [], image, imageAlt } = Astro.props;
+
+const parts = highlight && title.includes(highlight) ? title.split(highlight) : null;
+---
+
+<section class="phero">
+  <div class="phero__bg" aria-hidden="true"></div>
+
+  <div class="container phero__inner">
+    <div class="phero__content">
+      {
+        breadcrumb.length > 1 && (
+          <nav class="phero__crumbs" aria-label="Ruta de navegación">
+            <ol>
+              <li><a href="/">Inicio</a></li>
+              {breadcrumb.map((item) => (
+                <li>
+                  <Icon name="chevron-down" size={10} class="phero__crumb-sep" />
+                  {item.href ? <a href={item.href}>{item.label}</a> : <span>{item.label}</span>}
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )
+      }
+
+      <p class="phero__eyebrow">{eyebrow}</p>
+
+      <h1 class="phero__title">
+        {parts ? (
+          <>
+            {parts[0]}
+            <span class="phero__hl">{highlight}</span>
+            {parts[1]}
+          </>
+        ) : (
+          title
+        )}
+      </h1>
+
+      {description && <p class="phero__desc">{description}</p>}
+      <slot />
+    </div>
+
+    {
+      image && (
+        <div class="phero__media" aria-hidden={imageAlt ? undefined : 'true'}>
+          <img src={image} alt={imageAlt ?? ''} width="720" height="540" loading="eager" decoding="async" />
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .phero {
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(90% 120% at 85% 0%, rgba(29, 79, 116, 0.55) 0%, transparent 55%),
+      linear-gradient(165deg, #082239 0%, #0b2748 60%, #071b2d 100%);
+    color: #fff;
+    padding-block: clamp(2.75rem, 6vw, 4.5rem);
+  }
+
+  .phero__bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(41, 226, 249, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(41, 226, 249, 0.05) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: radial-gradient(ellipse 70% 100% at 70% 0%, #000, transparent 75%);
+    pointer-events: none;
+  }
+
+  .phero__inner {
+    position: relative;
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .phero__content {
+    display: grid;
+    gap: 1rem;
+    max-width: 46rem;
+  }
+
+  .phero__crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .phero__crumbs li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .phero__crumbs a:hover {
+    color: var(--cyan-300);
+  }
+
+  .phero__crumb-sep {
+    transform: rotate(-90deg);
+    opacity: 0.5;
+  }
+
+  .phero__eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cyan-300);
+    margin-top: 0.35rem;
+  }
+
+  .phero__title {
+    font-size: clamp(2.3rem, 5.5vw, 4rem);
+    line-height: 0.94;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .phero__hl {
+    color: var(--cyan-300);
+  }
+
+  .phero__desc {
+    font-size: var(--step-1);
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.68);
+    max-width: 56ch;
+  }
+
+  .phero__media {
+    display: none;
+    position: relative;
+    padding: clamp(0.75rem, 1.5vw, 1.25rem);
+    border-radius: calc(var(--radius-lg) + 10px);
+    background: linear-gradient(150deg, rgba(29, 79, 116, 0.5), rgba(4, 20, 31, 0.85));
+    border: 1px solid rgba(41, 226, 249, 0.18);
+    box-shadow: 0 40px 90px -70px #000;
+  }
+
+  .phero__media img {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    object-fit: contain;
+  }
+
+  @media (min-width: 900px) {
+    .phero__inner {
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    }
+
+    .phero__media {
+      display: block;
+    }
+  }
+</style>

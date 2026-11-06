@@ -1,0 +1,99 @@
+---
+interface Props {
+  as?: 'h1' | 'h2' | 'h3' | 'p' | 'div';
+  eyebrow?: string;
+  title: string;
+  /** Fragmento del título que se pinta con el cian de la marca */
+  highlight?: string;
+  description?: string;
+  align?: 'left' | 'center';
+  tone?: 'light' | 'dark';
+  level?: 'h1' | 'h2' | 'h3';
+  id?: string;
+  class?: string;
+}
+
+const {
+  eyebrow,
+  title,
+  highlight,
+  description,
+  align = 'left',
+  tone = 'light',
+  level = 'h2',
+  id,
+  class: className,
+} = Astro.props;
+
+const Heading = level;
+
+// Divide el título para poder resaltar el fragmento indicado
+const renderTitle = () => {
+  if (!highlight || !title.includes(highlight)) return title;
+  const [before, after] = title.split(highlight);
+  return `${before}__HIGHLIGHT__${highlight}__END__${after}`;
+};
+const parts = renderTitle().split('__HIGHLIGHT__');
+const pre = parts[0] ?? '';
+const rest = parts[1] ?? '';
+const [hl, post] = rest.split('__END__');
+---
+
+<div class:list={['heading', `heading--${align}`, `heading--${tone}`, className]}>
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  <Heading id={id} class="heading__title">
+    {pre}{hl ? <span class="heading__hl">{hl}</span> : null}{post}
+  </Heading>
+  {description && <p class="heading__desc">{description}</p>}
+</div>
+
+<style>
+  .heading {
+    display: grid;
+    gap: 1rem;
+    max-width: 46ch;
+  }
+
+  .heading--center {
+    justify-items: center;
+    text-align: center;
+    margin-inline: auto;
+    max-width: 60ch;
+  }
+
+  .heading__title {
+    font-size: var(--step-3);
+    letter-spacing: 0.01em;
+    line-height: 0.98;
+    text-transform: uppercase;
+  }
+
+  .heading--center .heading__title {
+    font-size: var(--step-4);
+  }
+
+  .heading__hl {
+    color: var(--teal-400);
+    -webkit-text-stroke: 0;
+  }
+
+  .heading--dark .heading__title {
+    color: #fff;
+  }
+
+  .heading--dark .heading__desc {
+    color: var(--on-dark-muted);
+  }
+
+  .heading__desc {
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    line-height: 1.7;
+    color: var(--ink-500);
+    max-width: 58ch;
+  }
+
+  .heading--center .heading__desc {
+    margin-inline: auto;
+  }
+</style>

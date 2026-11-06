@@ -1,0 +1,94 @@
+/* ==========================================================================
+   SETI TECHNOLOGY — Design tokens
+   Paleta extraída del brochure corporativo (BROCHURE SETI.pdf):
+     #003D60 · #153F60 · #0B2748 · #153357 (azules profundos)
+     #3DBBC8 (turquesa) · #12F1FF · #29E2F9 (cian eléctrico) · #104D87
+   ========================================================================== */
+
+:root {
+  /* --- Escala de marca -------------------------------------------------- */
+  --navy-950: #04141f;
+  --navy-900: #0b2748;
+  --navy-850: #0c2c46;
+  --navy-800: #003d60;
+  --navy-700: #153f60;
+  --navy-600: #1d4f74;
+  --blue-500: #104d87;
+  --teal-400: #3dbbc8;
+  --teal-300: #5fd3de;
+  --cyan-300: #29e2f9;
+  --cyan-200: #12f1ff;
+
+  /* --- Superficies claras ---------------------------------------------- */
+  --surface-0: #ffffff;
+  --surface-1: #f2f7fa;
+  --surface-2: #e4eef5;
+  --surface-3: #d3e3ee;
+
+  /* --- Texto ------------------------------------------------------------ */
+  --ink-900: #061a2a;
+  --ink-700: #23465c;
+  --ink-500: #557086;
+  --ink-300: #8ba3b5;
+  --on-dark: #ffffff;
+  --on-dark-muted: #a8c3d6;
+
+  /* --- Líneas y bordes -------------------------------------------------- */
+  --line: rgba(0, 61, 96, 0.14);
+  --line-strong: rgba(0, 61, 96, 0.28);
+  --line-dark: rgba(255, 255, 255, 0.14);
+  --line-dark-strong: rgba(255, 255, 255, 0.3);
+
+  /* --- Roles semánticos ------------------------------------------------- */
+  --color-brand: var(--navy-800);
+  --color-accent: var(--teal-400);
+  --color-accent-bright: var(--cyan-300);
+  --color-bg: var(--surface-0);
+  --color-fg: var(--ink-900);
+  --color-muted: var(--ink-500);
+
+  /* --- Tipografía ------------------------------------------------------- */
+  --font-display: 'Rajdhani', 'Barlow Condensed', 'Oswald', 'Arial Narrow', system-ui, sans-serif;
+  --font-body: 'Inter', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+
+  --step--1: clamp(0.8125rem, 0.79rem + 0.12vw, 0.875rem);
+  --step-0: clamp(0.9375rem, 0.9rem + 0.2vw, 1.0625rem);
+  --step-1: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
+  --step-2: clamp(1.375rem, 1.24rem + 0.6vw, 1.75rem);
+  --step-3: clamp(1.75rem, 1.5rem + 1.2vw, 2.5rem);
+  --step-4: clamp(2.25rem, 1.7rem + 2.4vw, 3.5rem);
+  --step-5: clamp(2.75rem, 1.9rem + 3.9vw, 4.75rem);
+  --step-6: clamp(3.25rem, 2rem + 5.6vw, 6rem);
+
+  /* --- Espaciado y layout ---------------------------------------------- */
+  --container: 1180px;
+  --container-wide: 1340px;
+  --gutter: clamp(1.15rem, 4vw, 2.5rem);
+  --section-y: clamp(3.75rem, 7vw, 7rem);
+  --section-y-sm: clamp(2.5rem, 4.5vw, 4rem);
+
+  /* --- Radios, sombras, movimiento ------------------------------------- */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(6, 26, 42, 0.06), 0 4px 12px rgba(6, 26, 42, 0.05);
+  --shadow-md: 0 12px 32px -12px rgba(6, 26, 42, 0.28), 0 2px 8px rgba(6, 26, 42, 0.06);
+  --shadow-lg: 0 32px 64px -24px rgba(4, 20, 31, 0.45);
+  --glow-cyan: 0 0 0 1px rgba(41, 226, 249, 0.25), 0 18px 48px -18px rgba(41, 226, 249, 0.45);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur: 220ms;
+
+  --header-h: 76px;
+}
+
+@media (max-width: 720px) {
+  :root {
+    --header-h: 64px;
+  }
+}

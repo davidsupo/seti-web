@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Bloquea el contenido del CMS o rutas internas si se agregan en el futuro
+Disallow: /admin/
+
+Sitemap: https://setitechnology.pe/sitemap-index.xml

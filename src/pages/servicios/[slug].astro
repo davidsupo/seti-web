@@ -1,0 +1,352 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import Section from '../../components/ui/Section.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import Button from '../../components/ui/Button.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+import Cta from '../../components/sections/Cta.astro';
+import Icon from '../../components/ui/Icon.astro';
+import { services, getService } from '../../data/services';
+import { serviceSchema, breadcrumbSchema, organizationSchema } from '../../lib/schema';
+
+export async function getStaticPaths() {
+  return services.map((service) => ({
+    params: { slug: service.slug },
+    props: { service },
+  }));
+}
+
+const { service } = Astro.props;
+const related = services.filter((item) => item.slug !== service.slug).slice(0, 3);
+const url = `/servicios/${service.slug}/`;
+---
+
+<BaseLayout
+  title={service.shortTitle}
+  description={service.summary}
+  jsonLd={[
+    organizationSchema,
+    serviceSchema(service.title, service.summary, url, service.slug),
+    breadcrumbSchema([
+      { label: 'Inicio', href: '/' },
+      { label: 'Servicios', href: '/servicios/' },
+      { label: service.shortTitle, href: url },
+    ]),
+  ]}
+>
+  <PageHero
+    eyebrow={`Servicio ${service.order}`}
+    title={service.title}
+    description={service.tagline}
+    breadcrumb={[
+      { label: 'Servicios', href: '/servicios/' },
+      { label: service.shortTitle, href: url },
+    ]}
+    image={service.image}
+    imageAlt={service.imageAlt}
+  >
+    <div class="sd-hero-actions">
+      <Button href="/contacto/" size="md">Cotizar este servicio</Button>
+      <a href="/servicios/" class="sd-hero-back">
+        <Icon name="arrow-right" size={14} />
+        Ver todos los servicios
+      </a>
+    </div>
+  </PageHero>
+
+  <Section>
+    <div class="container sd">
+      <div class="sd__main">
+        <p class="sd__tagline">
+          <Icon name={service.icon as any} size={16} />
+          {service.tagline}
+        </p>
+
+        {service.intro.map((paragraph) => <p class="sd__p">{paragraph}</p>)}
+
+        <blockquote class="sd__quote">
+          <Icon name="quote" size={22} class="sd__quote-icon" />
+          <p>{service.closing}</p>
+        </blockquote>
+
+        <div class="sd__actions">
+          <Button href="/contacto/" icon="arrow-right">Solicitar propuesta</Button>
+          <Button href="/proyectos/" variant="outline" icon="arrow-up-right">
+            Ver proyectos
+          </Button>
+        </div>
+      </div>
+
+      <aside class="sd__aside">
+        <div class="sd__panel">
+          <p class="sd__panel-label">Capacidades incluidas</p>
+          <ul class="sd__caps">
+            {
+              service.capabilities.map((capability) => (
+                <li>
+                  <Icon name="check" size={13} stroke={2.6} />
+                  {capability}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <dl class="sd__specs">
+          {
+            service.specs.map((spec) => (
+              <div>
+                <dt>{spec.label}</dt>
+                <dd>{spec.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+
+        <div class="sd__help">
+          <Icon name="headset" size={20} />
+          <p>
+            ¿Tienes un proyecto en curso?
+            <a href="/contacto/">Conversemos con un ingeniero</a>.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </Section>
+
+  <Section tone="mist">
+    <div class="container">
+      <SectionHeading
+        eyebrow="Integración"
+        title="Este servicio se combina con"
+        highlight="combina"
+        description="Los sistemas funcionan mejor juntos: video, accesos y alarmas sobre una misma plataforma."
+      />
+
+      <div class="related">
+        {
+          related.map((item) => (
+            <div>
+              <ServiceCard service={item} />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </Section>
+
+  <Cta />
+</BaseLayout>
+
+<style>
+  .sd-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: 1rem;
+  }
+
+  .sd-hero-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.65);
+    transition: color var(--dur) var(--ease-out);
+  }
+
+  .sd-hero-back svg {
+    transform: rotate(180deg);
+  }
+
+  .sd-hero-back:hover {
+    color: var(--cyan-300);
+  }
+
+  .sd {
+    display: grid;
+    gap: clamp(2.25rem, 4.5vw, 4rem);
+    align-items: start;
+  }
+
+  .sd__main {
+    display: grid;
+    gap: 1.15rem;
+    max-width: 44rem;
+  }
+
+  .sd__tagline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal-400);
+  }
+
+  .sd__p {
+    font-size: var(--step-0);
+    line-height: 1.8;
+    color: var(--ink-700);
+  }
+
+  .sd__quote {
+    position: relative;
+    margin-top: 0.75rem;
+    padding: 1.35rem 1.5rem 1.35rem 3.25rem;
+    background: var(--surface-1);
+    border-left: 2px solid var(--teal-400);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+
+  .sd__quote p {
+    font-size: var(--step-1);
+    line-height: 1.55;
+    color: var(--ink-900);
+  }
+
+  .sd__quote-icon {
+    position: absolute;
+    left: 1.1rem;
+    top: 1.35rem;
+    color: var(--teal-400);
+    opacity: 0.7;
+  }
+
+  .sd__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  .sd__aside {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .sd__panel {
+    padding: 1.5rem;
+    background: var(--navy-900);
+    border-radius: var(--radius-md);
+    color: #fff;
+  }
+
+  .sd__panel-label {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cyan-300);
+    margin-bottom: 1rem;
+  }
+
+  .sd__caps {
+    display: grid;
+    gap: 0.7rem;
+  }
+
+  .sd__caps li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.78);
+  }
+
+  .sd__caps svg {
+    flex: none;
+    margin-top: 0.3rem;
+    color: var(--teal-400);
+  }
+
+  .sd__specs {
+    display: grid;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  .sd__specs div {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 0.75rem;
+    padding: 0.8rem 1rem;
+    background: var(--surface-0);
+  }
+
+  .sd__specs div + div {
+    border-top: 1px solid var(--line);
+  }
+
+  .sd__specs dt {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-500);
+  }
+
+  .sd__specs dd {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--ink-900);
+    line-height: 1.5;
+  }
+
+  .sd__help {
+    display: flex;
+    gap: 0.7rem;
+    padding: 1.1rem 1.25rem;
+    background: var(--surface-1);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: var(--ink-500);
+  }
+
+  .sd__help svg {
+    flex: none;
+    color: var(--blue-500);
+  }
+
+  .sd__help a {
+    color: var(--blue-500);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .related {
+    display: grid;
+    gap: 1.15rem;
+    margin-top: 2.5rem;
+  }
+
+  @media (min-width: 720px) {
+    .related {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .sd {
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+    }
+
+    .related {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .sd__aside {
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+    }
+  }
+</style>

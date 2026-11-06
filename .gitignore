@@ -1,0 +1,21 @@
+# Dependencias
+node_modules/
+.pnpm-store/
+
+# Build
+dist/
+.astro/
+
+# Entorno
+.env
+.env.*
+!.env.example
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# QA local (capturas y perfiles de navegador)
+.review/
+.tmp/
+.npm-cache/

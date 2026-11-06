@@ -1,0 +1,44 @@
+---
+interface Props {
+  id?: string;
+  tone?: 'light' | 'mist' | 'dark' | 'navy';
+  padding?: 'default' | 'tight' | 'none';
+  container?: boolean;
+  class?: string;
+}
+
+const { id, tone = 'light', padding = 'default', container = false, class: className } = Astro.props;
+
+const classes = [
+  'section',
+  tone === 'mist' && 'section--mist',
+  tone === 'dark' && 'section--dark',
+  tone === 'navy' && 'section--navy',
+  padding === 'tight' && 'section--tight',
+  padding === 'none' && 'section--flush',
+  className,
+]
+  .filter(Boolean)
+  .join(' ');
+---
+
+<section id={id} class={classes}>
+  {container ? <div class="container"><slot /></div> : <slot />}
+</section>
+
+<style>
+  .section--flush {
+    padding-block: 0;
+  }
+
+  .section--navy {
+    background:
+      linear-gradient(180deg, var(--navy-800) 0%, var(--navy-900) 100%);
+    color: var(--on-dark);
+  }
+
+  .section--navy h2,
+  .section--navy h3 {
+    color: #fff;
+  }
+</style>

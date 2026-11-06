@@ -1,0 +1,69 @@
+---
+interface Props {
+  tone?: 'light' | 'dark' | 'accent';
+  dot?: boolean;
+  class?: string;
+}
+
+const { tone = 'light', dot = false, class: className } = Astro.props;
+---
+
+<span class:list={['badge', `badge--${tone}`, className]}>
+  {dot && <span class="badge__dot" aria-hidden="true"></span>}
+  <slot />
+</span>
+
+<style>
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .badge--light {
+    background: var(--surface-2);
+    color: var(--blue-500);
+  }
+
+  .badge--dark {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--on-dark-muted);
+    border: 1px solid var(--line-dark);
+  }
+
+  .badge--accent {
+    background: rgba(41, 226, 249, 0.12);
+    color: var(--cyan-300);
+    border: 1px solid rgba(41, 226, 249, 0.28);
+  }
+
+  .badge__dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 0 3px rgba(41, 226, 249, 0.16);
+    animation: pulse 2.4s var(--ease-in-out) infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.45;
+      transform: scale(0.82);
+    }
+  }
+</style>

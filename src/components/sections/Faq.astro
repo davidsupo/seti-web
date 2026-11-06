@@ -1,0 +1,202 @@
+---
+import Section from '../ui/Section.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import Icon from '../ui/Icon.astro';
+import { faqs } from '../../data/faqs';
+import { site } from '../../data/site';
+
+interface Props {
+  limit?: number;
+}
+
+const { limit } = Astro.props;
+const items = limit ? faqs.slice(0, limit) : faqs;
+---
+
+<Section id="faq">
+  <div class="container faq">
+    <div class="faq__aside">
+      <SectionHeading
+        eyebrow="Preguntas frecuentes"
+        title="Lo que suelen preguntarnos"
+        highlight="preguntarnos"
+        description="Si tu duda no está aquí, escríbenos: respondemos con criterio técnico, no con un guion de ventas."
+      />
+
+      <div class="faq__card">
+        <span class="faq__card-icon"><Icon name="headset" size={20} /></span>
+        <div>
+          <p class="faq__card-title">¿Necesitas una respuesta directa?</p>
+          <a href={site.phone.href} class="faq__card-link">{site.phone.label}</a>
+          <p class="faq__card-note">{site.hours}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq__list">
+      {
+        items.map((item, index) => (
+          <details class="faq__item" open={index === 0} data-reveal style={`--reveal-delay:${index * 60}ms`}>
+            <summary>
+              <span class="faq__q">{item.question}</span>
+              <span class="faq__icon" aria-hidden="true">
+                <Icon name="chevron-down" size={16} stroke={2} />
+              </span>
+            </summary>
+            <div class="faq__a">
+              <p>{item.answer}</p>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</Section>
+
+<style>
+  .faq {
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 4rem);
+    align-items: start;
+  }
+
+  .faq__aside {
+    display: grid;
+    gap: 1.75rem;
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+  }
+
+  .faq__card {
+    display: flex;
+    gap: 0.85rem;
+    padding: 1.1rem 1.25rem;
+    background: var(--surface-1);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    max-width: 22rem;
+  }
+
+  .faq__card-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--navy-800);
+    color: var(--cyan-300);
+  }
+
+  .faq__card-title {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ink-700);
+  }
+
+  .faq__card-link {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--navy-800);
+    margin-top: 0.1rem;
+  }
+
+  .faq__card-link:hover {
+    color: var(--teal-400);
+  }
+
+  .faq__card-note {
+    font-size: 0.68rem;
+    color: var(--ink-500);
+    margin-top: 0.2rem;
+  }
+
+  .faq__list {
+    display: grid;
+    border-top: 1px solid var(--line);
+  }
+
+  .faq__item {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .faq__item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.15rem 0.25rem;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .faq__item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__q {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+    color: var(--ink-900);
+    transition: color var(--dur) var(--ease-out);
+  }
+
+  .faq__item:hover .faq__q {
+    color: var(--blue-500);
+  }
+
+  .faq__icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    color: var(--blue-500);
+    transition:
+      transform var(--dur) var(--ease-out),
+      background var(--dur) var(--ease-out),
+      color var(--dur) var(--ease-out);
+  }
+
+  .faq__item[open] .faq__icon {
+    transform: rotate(180deg);
+    background: var(--navy-800);
+    border-color: var(--navy-800);
+    color: var(--cyan-300);
+  }
+
+  .faq__a {
+    padding: 0 3rem 1.35rem 0.25rem;
+    font-size: 0.9rem;
+    line-height: 1.75;
+    color: var(--ink-500);
+    animation: faq-in 260ms var(--ease-out);
+  }
+
+  @keyframes faq-in {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+  }
+
+  @media (min-width: 980px) {
+    .faq {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    }
+  }
+
+  @media (max-width: 979px) {
+    .faq__aside {
+      position: static;
+    }
+  }
+</style>

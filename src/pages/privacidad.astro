@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Section from '../components/ui/Section.astro';
+import { site } from '../data/site';
+
+const title = 'Política de privacidad';
+const description =
+  'Cómo trata SETI Technology los datos que recibimos a través de este sitio web y de nuestros canales de contacto.';
+const updated = '06 de noviembre de 2026';
+---
+
+<BaseLayout title={title} description={description}>
+  <PageHero
+    eyebrow="Legal"
+    title="Política de privacidad"
+    highlight="privacidad"
+    description={`Última actualización: ${updated}.`}
+    breadcrumb={[{ label: 'Privacidad', href: '/privacidad/' }]}
+  />
+
+  <Section>
+    <div class="container container--narrow">
+      <div class="prose">
+        <h2>Quién trata tus datos</h2>
+        <p>
+          {site.name} ({site.headquarters.label}) es responsable de los datos personales que
+          nos proporcionas a través de este sitio web, del correo electrónico, del teléfono o
+          de nuestras redes sociales.
+        </p>
+
+        <h2>Qué datos recibimos</h2>
+        <p>
+          Este sitio no cuenta con base de datos propia ni utiliza cookies de seguimiento
+          publicitario. La información que recibimos es la que decides enviarnos
+          voluntariamente:
+        </p>
+        <ul>
+          <li>Nombre y datos de contacto (correo, teléfono, empresa).</li>
+          <li>Ciudad y servicio de interés.</li>
+          <li>Descripción del proyecto o consulta que nos compartes.</li>
+        </ul>
+
+        <h2>Cómo se envían los datos</h2>
+        <p>
+          El formulario de contacto de este sitio no envía información a un servidor: genera
+          un mensaje en tu propio cliente de correo o en WhatsApp, que tú decides enviar. Por
+          lo tanto, la información solo llega a nosotros cuando completas ese envío.
+        </p>
+
+        <h2>Para qué los usamos</h2>
+        <ul>
+          <li>Responder tu solicitud y preparar una propuesta técnica.</li>
+          <li>Coordinar visitas técnicas y reuniones.</li>
+          <li>Mantener el historial comercial y de soporte del proyecto.</li>
+        </ul>
+
+        <h2>Con quién los compartimos</h2>
+        <p>
+          No vendemos ni cedemos datos personales a terceros. Podemos compartir información
+          estrictamente necesaria con proveedores de servicios (por ejemplo, transporte o
+          fabricantes) cuando sea indispensable para ejecutar un proyecto contratado.
+        </p>
+
+        <h2>Cuánto tiempo los conservamos</h2>
+        <p>
+          Conservamos la información comercial mientras exista una relación con el cliente o
+          mientras sea necesaria para atender obligaciones legales o de garantía.
+        </p>
+
+        <h2>Tus derechos</h2>
+        <p>
+          Puedes solicitar el acceso, rectificación, cancelación u oposición al tratamiento de
+          tus datos escribiendo a
+          <a href={site.email.href}>{site.email.label.toLowerCase()}</a>.
+        </p>
+
+        <h2>Cookies y servicios externos</h2>
+        <p>
+          El mapa de cobertura utiliza mapas de CARTO y OpenStreetMap, y las tipografías se
+          cargan desde Google Fonts. Estos proveedores pueden registrar la dirección IP desde
+          la que se solicita el recurso, según sus propias políticas.
+        </p>
+
+        <h2>Cambios en esta política</h2>
+        <p>
+          Podemos actualizar este documento para reflejar cambios en nuestros procesos. La
+          fecha de la última actualización aparece al inicio de la página.
+        </p>
+      </div>
+    </div>
+  </Section>
+</BaseLayout>
